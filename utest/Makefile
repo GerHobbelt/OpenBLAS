@@ -42,7 +42,7 @@ ifeq ($(OSNAME), AIX)
 OBJS = utest_main2.o
 endif
 
-all : run_test
+all : 
 
 $(UTESTBIN): $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
