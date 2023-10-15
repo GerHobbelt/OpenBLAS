@@ -38,7 +38,7 @@ if (${F_COMPILER} STREQUAL "G95")
   endif ()
 endif ()
 
-if (${F_COMPILER} STREQUAL "GFORTRAN")
+if (${F_COMPILER} STREQUAL "GFORTRAN" OR ${F_COMPILER} STREQUAL "F95")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_GFORT")
   # ensure reentrancy of lapack codes
   set(FCOMMON_OPT "${FCOMMON_OPT} -Wall -frecursive")
@@ -121,7 +121,7 @@ if (${F_COMPILER} STREQUAL "IBM")
   endif ()
 endif ()
 
-if (${F_COMPILER} STREQUAL "PGI")
+if (${F_COMPILER} STREQUAL "PGI" OR ${F_COMPILER} STREQUAL "PGF95")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_PGI")
   set(COMMON_PROF "${COMMON_PROF} -DPGICOMPILER")
   if (BINARY64)
