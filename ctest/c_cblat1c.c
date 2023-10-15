@@ -437,15 +437,15 @@ static real c_b43 = (float)1.;
 
     /* Local variables */
     static integer i__;
-    extern /* Subroutine */ int ctest_(int*, complex*, complex*, complex*, real*);
+    extern /* Subroutine */ int ctest_(integer*, complex*, complex*, complex*, real*);
     static complex mwpcs[5], mwpct[5];
-    extern /* Subroutine */ int itest1_(int*, int*), stest1_(real*,real*,real*,real*);
+    extern /* Subroutine */ int itest1_(integer*, integer*), stest1_(real*,real*,real*,real*);
     static complex cx[8];
-    extern real scnrm2test_(int*, complex*, int*);
+    extern real scnrm2test_(integer*, complex*, integer*);
     static integer np1;
-    extern integer icamaxtest_(int*, complex*, int*);
-    extern /* Subroutine */ int csscaltest_(int*, real*, complex*, int*);
-    extern real scasumtest_(int*, complex*, int*);
+    extern integer icamaxtest_(integer*, complex*, integer*);
+    extern /* Subroutine */ int csscaltest_(integer*, real*, complex*, integer*);
+    extern real scasumtest_(integer*, complex*, integer*);
     static integer len;
 
 /*     .. Parameters .. */
@@ -734,10 +734,10 @@ static real c_b43 = (float)1.;
     static complex cdot[1];
     static integer lenx, leny, i__;
     static complex ctemp;
-    extern /* Subroutine */ int ctest_(int*, complex*, complex*, complex*, real*);
+    extern /* Subroutine */ int ctest_(integer*, complex*, complex*, complex*, real*);
     static integer ksize;
-    extern /* Subroutine */ int cdotctest_(int*, complex*, int*, complex*, int*,complex*), ccopytest_(int*, complex*, int*, complex*, int*), cdotutest_(int*, complex*, int*, complex*, int*, complex*), 
-	    cswaptest_(int*, complex*, int*, complex*, int*), caxpytest_(int*, complex*, complex*, int*, complex*, int*);
+    extern /* Subroutine */ int cdotctest_(integer*, complex*, integer*, complex*, integer*,complex*), ccopytest_(integer*, complex*, integer*, complex*, integer*), cdotutest_(integer*, complex*, integer*, complex*, integer*, complex*), 
+	    cswaptest_(integer*, complex*, integer*, complex*, integer*), caxpytest_(integer*, complex*, complex*, integer*, complex*, integer*);
     static integer ki, kn;
     static complex cx[7], cy[7];
     static integer mx, my;
@@ -887,7 +887,7 @@ L40:
 /* Subroutine */ int stest1_(real* scomp1, real* strue1, real* ssize, real* sfac)
 {
     static real scomp[1], strue[1];
-    extern /* Subroutine */ int stest_(int*, real*, real*, real*, real*);
+    extern /* Subroutine */ int stest_(integer*, real*, real*, real*, real*);
 
 /*     ************************* STEST1 ***************************** */
 
@@ -939,7 +939,7 @@ doublereal sdiff_(real* sa, real* sb)
     /* Local variables */
     static integer i__;
     static real scomp[20], ssize[20], strue[20];
-    extern /* Subroutine */ int stest_(int*, real*,real*,real*,real*);
+    extern /* Subroutine */ int stest_(integer*, real*,real*,real*,real*);
 
 /*     **************************** CTEST ***************************** */
 
