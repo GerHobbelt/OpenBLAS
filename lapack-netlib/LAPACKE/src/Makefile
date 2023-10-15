@@ -28,7 +28,6 @@
 ##############################################################################
 # Contents: Native C interface to LAPACK
 # Author: Intel Corporation
-# September, 2010
 ##############################################################################
 # makefile for LAPACKE, used to build lapacke binary.
 #
@@ -138,6 +137,10 @@ lapacke_cgerqf.o \
 lapacke_cgerqf_work.o \
 lapacke_cgesdd.o \
 lapacke_cgesdd_work.o \
+lapacke_cgedmd.o \
+lapacke_cgedmd_work.o \
+lapacke_cgedmdq.o \
+lapacke_cgedmdq_work.o \
 lapacke_cgesv.o \
 lapacke_cgesv_work.o \
 lapacke_cgesvd.o \
@@ -608,6 +611,8 @@ lapacke_ctrsna.o \
 lapacke_ctrsna_work.o \
 lapacke_ctrsyl.o \
 lapacke_ctrsyl_work.o \
+lapacke_ctrsyl3.o \
+lapacke_ctrsyl3_work.o \
 lapacke_ctrtri.o \
 lapacke_ctrtri_work.o \
 lapacke_ctrtrs.o \
@@ -762,6 +767,10 @@ lapacke_dgerqf.o \
 lapacke_dgerqf_work.o \
 lapacke_dgesdd.o \
 lapacke_dgesdd_work.o \
+lapacke_dgedmd.o \
+lapacke_dgedmd_work.o \
+lapacke_dgedmdq.o \
+lapacke_dgedmdq_work.o \
 lapacke_dgesv.o \
 lapacke_dgesv_work.o \
 lapacke_dgesvd.o \
@@ -1228,6 +1237,8 @@ lapacke_dtrsna.o \
 lapacke_dtrsna_work.o \
 lapacke_dtrsyl.o \
 lapacke_dtrsyl_work.o \
+lapacke_dtrsyl3.o \
+lapacke_dtrsyl3_work.o \
 lapacke_dtrtri.o \
 lapacke_dtrtri_work.o \
 lapacke_dtrtrs.o \
@@ -1340,6 +1351,10 @@ lapacke_sgerqf.o \
 lapacke_sgerqf_work.o \
 lapacke_sgesdd.o \
 lapacke_sgesdd_work.o \
+lapacke_sgedmd.o \
+lapacke_sgedmd_work.o \
+lapacke_sgedmdq.o \
+lapacke_sgedmdq_work.o \
 lapacke_sgesv.o \
 lapacke_sgesv_work.o \
 lapacke_sgesvd.o \
@@ -1800,6 +1815,8 @@ lapacke_strsna.o \
 lapacke_strsna_work.o \
 lapacke_strsyl.o \
 lapacke_strsyl_work.o \
+lapacke_strsyl3.o \
+lapacke_strsyl3_work.o \
 lapacke_strtri.o \
 lapacke_strtri_work.o \
 lapacke_strtrs.o \
@@ -1908,6 +1925,10 @@ lapacke_zgerqf.o \
 lapacke_zgerqf_work.o \
 lapacke_zgesdd.o \
 lapacke_zgesdd_work.o \
+lapacke_zgedmd.o \
+lapacke_zgedmd_work.o \
+lapacke_zgedmdq.o \
+lapacke_zgedmdq_work.o \
 lapacke_zgesv.o \
 lapacke_zgesv_work.o \
 lapacke_zgesvd.o \
@@ -2378,6 +2399,8 @@ lapacke_ztrsna.o \
 lapacke_ztrsna_work.o \
 lapacke_ztrsyl.o \
 lapacke_ztrsyl_work.o \
+lapacke_ztrsyl3.o \
+lapacke_ztrsyl3_work.o \
 lapacke_ztrtri.o \
 lapacke_ztrtri_work.o \
 lapacke_ztrtrs.o \
@@ -2552,7 +2575,7 @@ $(LAPACKELIB): $(OBJ) $(OBJ_S) $(OBJ_C) $(OBJ_D) $(OBJ_Z) $(DEPRECATED) $(EXTEND
 ifdef BUILD_DEPRECATED
 	$(AR) $(ARFLAGS) $@ $(DEPRECATED)
 endif
-ifdef (USEXBLAS)
+ifdef USEXBLAS
 	$(AR) $(ARFLAGS) $@ $(EXTENDED)
 endif
 ifdef LAPACKE_WITH_TMG
