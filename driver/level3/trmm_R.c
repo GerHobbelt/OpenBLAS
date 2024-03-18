@@ -42,6 +42,16 @@
 
 const static FLOAT dp1 = 1.;
 
+#ifdef TRMM_DEFAULT_P 
+#undef GEMM_P
+#define GEMM_P TRMM_DEFAULT_P
+#endif
+
+#ifdef TRMM_DEFAULT_Q 
+#undef GEMM_Q
+#define GEMM_Q TRMM_DEFAULT_Q
+#endif
+
 #ifdef CONJ
 #define GEMM_KERNEL   GEMM_KERNEL_R
 #define TRMM_KERNEL_N TRMM_KERNEL_RR

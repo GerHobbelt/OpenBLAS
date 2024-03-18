@@ -37,6 +37,39 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
+/***************************************************************************
+(c) RIKEN 2024, 2024. All rights reserved. level3_thread.c 0.3.26
+Copyright 2024 FUJITSU limited
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   1. Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+
+   2. Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in
+      the documentation and/or other materials provided with the
+      distribution.
+   3. Neither the name of the OpenBLAS project nor the names of
+      its contributors may be used to endorse or promote products
+      derived from this software without specific prior written
+      permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+
 #ifndef CACHE_LINE_SIZE
 #define CACHE_LINE_SIZE 8
 #endif
@@ -787,7 +820,63 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, IFLOAT *sa, IF
     GEMM_LOCAL(args, range_m, range_n, sa, sb, 0);
   } else {
     args -> nthreads = nthreads_m * nthreads_n;
+
+#if defined(GEMM_PARALLEL_REMAINDER_M) && defined(GEMM_PARALLEL_REMAINDER_N)
+  {
+    BLASLONG remainder_m=GEMM_PARALLEL_REMAINDER_M;
+    BLASLONG remainder_n=GEMM_PARALLEL_REMAINDER_N;
+    BLASLONG range_m1[2];
+    BLASLONG range_m2[2];
+    BLASLONG range_n1[2];
+    BLASLONG range_n2[2];
+    BLASLONG size_m,size_n;
+    BLASLONG nthreads=args -> nthreads;
+
+    size_m=m-m%(nthreads_m*remainder_m);
+    size_n=n-n%(nthreads*DIVIDE_RATE*remainder_n);
+
+    if(range_m) {
+      range_m1[0]=range_m[0];
+      range_m1[1]=range_m[0]+size_m;
+      range_m2[0]=range_m1[1];
+      range_m2[1]=range_m[1];
+    }
+    else {
+      range_m1[0]=0;
+      range_m1[1]=size_m;
+      range_m2[0]=size_m;
+      range_m2[1]=m;
+    }
+
+    if(range_n) {
+      range_n1[0]=range_n[0];
+      range_n1[1]=range_n[0]+size_n;
+      range_n2[0]=range_n1[1];
+      range_n2[1]=range_n[1];
+    }
+    else {
+      range_n1[0]=0;
+      range_n1[1]=size_n;
+      range_n2[0]=size_n;
+      range_n2[1]=n;
+    }
+
+    if(size_m>0 && size_n>0) {
+      gemm_driver(args, range_m1, range_n1, sa, sb, nthreads_m, nthreads_n);
+    }
+
+    if(size_m>0 && range_n2[1]-range_n2[0]>0) {
+      gemm_driver(args, range_m1, range_n2, sa, sb, nthreads, 1);
+    }
+
+    if(range_m2[1]-range_m2[0]>0 && n>0) {
+      gemm_driver(args, range_m2, range_n , sa, sb, 1, nthreads);
+    }
+
+  }
+#else
     gemm_driver(args, range_m, range_n, sa, sb, nthreads_m, nthreads_n);
+#endif
   }
 
   return 0;

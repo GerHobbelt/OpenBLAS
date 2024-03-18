@@ -3458,12 +3458,12 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 
 /* When all BLAS3 routines are implemeted with SVE, SGEMM_DEFAULT_UNROLL_M should be "sve_vl".
 Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy routines in both directions seperated. */
-#define SGEMM_DEFAULT_UNROLL_M  4
-#define SGEMM_DEFAULT_UNROLL_N  8
+#define SGEMM_DEFAULT_UNROLL_M  64
+#define SGEMM_DEFAULT_UNROLL_N  5
 /* SGEMM_UNROLL_MN is calculated as max(SGEMM_UNROLL_M, SGEMM_UNROLL_N)
  * Since we don't define SGEMM_UNROLL_M correctly we have to manually set this macro.
  * If SVE size is ever more than 1024, this should be increased also. */
-#define SGEMM_DEFAULT_UNROLL_MN  32
+#define SGEMM_DEFAULT_UNROLL_MN  64
 
 /* When all BLAS3 routines are implemeted with SVE, DGEMM_DEFAULT_UNROLL_M should be "sve_vl".
 Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy routines in both directions seperated. */
@@ -3480,20 +3480,35 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define ZGEMM_DEFAULT_UNROLL_N  4
 #define ZGEMM_DEFAULT_UNROLL_MN  16
 
-#define SGEMM_DEFAULT_P	128
+#define SGEMM_DEFAULT_P	64
 #define DGEMM_DEFAULT_P	160
 #define CGEMM_DEFAULT_P 128
 #define ZGEMM_DEFAULT_P 128
 
-#define SGEMM_DEFAULT_Q 352
+#define SGEMM_DEFAULT_Q 960
 #define DGEMM_DEFAULT_Q 128
 #define CGEMM_DEFAULT_Q 224
 #define ZGEMM_DEFAULT_Q 112
 
-#define SGEMM_DEFAULT_R 4096
+#define SGEMM_DEFAULT_R 4000
 #define DGEMM_DEFAULT_R 4096
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
+
+#if defined(DOUBLE) || defined(COMPLEX)
+#else // SINGLE
+#define DIVIDE_RATE 1
+
+#define GEMM_PARALLEL_REMAINDER_M SGEMM_DEFAULT_UNROLL_M
+#define GEMM_PARALLEL_REMAINDER_N SGEMM_DEFAULT_UNROLL_N
+
+#define TRMM_DEFAULT_P 192
+#define TRMM_DEFAULT_Q 192
+
+#define TRSM_DEFAULT_P 192
+#define TRSM_DEFAULT_Q 320
+
+#endif
 
 #elif defined(ARMV8SVE) || defined(ARMV9) || defined(CORTEXA510)|| defined(CORTEXA710) || defined(CORTEXX2) // 128-bit SVE
 

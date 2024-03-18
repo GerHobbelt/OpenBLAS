@@ -42,6 +42,16 @@
 
 const static FLOAT dm1 = -1.;
 
+#ifdef TRSM_DEFAULT_P
+#undef GEMM_P
+#define GEMM_P TRSM_DEFAULT_P
+#endif
+
+#ifdef TRSM_DEFAULT_Q
+#undef GEMM_Q
+#define GEMM_Q TRSM_DEFAULT_Q
+#endif
+
 #ifdef CONJ
 #define GEMM_KERNEL   GEMM_KERNEL_L
 #if (!defined(TRANSA) && defined(UPPER)) || (defined(TRANSA) && !defined(UPPER))

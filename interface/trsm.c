@@ -87,6 +87,30 @@
 #define SMP_FACTOR 128
 #endif
 
+#ifndef TRMM
+#ifdef TRSM_DEFAULT_P
+#undef GEMM_P
+#define GEMM_P TRSM_DEFAULT_P
+#endif
+
+#ifdef TRSM_DEFAULT_Q
+#undef GEMM_Q
+#define GEMM_Q TRSM_DEFAULT_Q
+#endif
+
+#else
+
+#ifdef TRMM_DEFAULT_P
+#undef GEMM_P
+#define GEMM_P TRMM_DEFAULT_P
+#endif
+
+#ifdef TRMM_DEFAULT_Q
+#undef GEMM_Q
+#define GEMM_Q TRMM_DEFAULT_Q
+#endif
+#endif
+
 static int (*trsm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLASLONG) = {
 #ifndef TRMM
   TRSM_LNUU, TRSM_LNUN, TRSM_LNLU, TRSM_LNLN,
