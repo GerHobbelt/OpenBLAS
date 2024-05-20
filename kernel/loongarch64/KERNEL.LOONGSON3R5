@@ -14,10 +14,12 @@ ZSCALKERNEL  = cscal_lasx.S
 SAMAXKERNEL =  amax_lasx.S
 DAMAXKERNEL =  amax_lasx.S
 CAMAXKERNEL =  camax_lasx.S
+ZAMAXKERNEL =  camax_lasx.S
 
 SAMINKERNEL =  amin_lasx.S
 DAMINKERNEL =  amin_lasx.S
 CAMINKERNEL =  camin_lasx.S
+ZAMINKERNEL =  camin_lasx.S
 
 SMAXKERNEL  =  max_lsx.S
 DMAXKERNEL =   max_lsx.S
@@ -56,6 +58,8 @@ ZAXPYKERNEL =  caxpy_lasx.S
 
 SAXPBYKERNEL = axpby_lasx.S
 DAXPBYKERNEL = axpby_lasx.S
+CAXPBYKERNEL = caxpby_lasx.S
+ZAXPBYKERNEL = caxpby_lasx.S
 
 SSUMKERNEL  =  sum_lasx.S
 DSUMKERNEL  =  sum_lasx.S
