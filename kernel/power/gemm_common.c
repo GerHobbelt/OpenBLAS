@@ -3,16 +3,11 @@
 #include "common.h"
 
 #include <altivec.h>
+#include <inttypes.h>
 
 #define NBMAX 4096
 
 #define FORCEINLINE      inline __attribute__((always_inline))
-
-#ifdef __clang__
-#define uint16_t         unsigned short
-#define uint32_t         unsigned int
-#define uint64_t         unsigned long long
-#endif
 
 #ifdef _ARCH_PWR10
 #ifdef __has_builtin
@@ -33,7 +28,12 @@
 #define USE_VECTOR_PAIRS
 #endif
 
+#ifdef _AIX
+#include<stdbool.h>
+typedef __vector unsigned short vec_bf16;
+#else
 typedef __vector IFLOAT        vec_bf16;
+#endif
 typedef __vector FLOAT         vec_f32;
 typedef __vector unsigned char vec_uc8;
 
@@ -49,7 +49,7 @@ FORCEINLINE void vec_load_pair(vec_f32 *dst, vec_f32 *src)
 #ifdef __clang__
   vy0p = __builtin_vsx_lxvp(0L, (const __vector_pair *)(src));
 #else
-  vy0p = *(__vector_pair *)(src);
+  vy0p = *(__vector_pair *)((void *)src);
 #endif
   __builtin_vsx_disassemble_pair((void *)(dst), &vy0p);
 #else
@@ -66,7 +66,7 @@ FORCEINLINE void vec_store_pair(vec_f32 *dst, vec_f32 *src)
 #ifdef __clang__
   __builtin_vsx_stxvp(vy0p, 0L, (__vector_pair *)(dst));
 #else
-  *(__vector_pair *)(dst) = vy0p;
+  *(__vector_pair *)((void *)dst) = vy0p;
 #endif
 #else
   dst[0] = src[0];

@@ -40,7 +40,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define USE_BFGEMV_8_T_VSX
 
-static void BF16GEMV_T_VSX_1(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha, FLOAT beta)
+static void BF16GEMV_T_VSX_1(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha)
 {
   IFLOAT *a0;
   vec_bf16 *va0, *v_x;
@@ -55,26 +55,26 @@ static void BF16GEMV_T_VSX_1(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   BLASLONG i = 0;
 
   for (; i < n8; i++) {
-    vec_load_vec2(v_x, i, inp, zero);
+    vec_load_vec2(&v_x[i], inp, zero);
 
     temp0 += vec_load_mult(&va0[i], inp, zero);
   }
 
   n &= 7;
   if (n > 4) {
-    vec_loadN_vec2(v_x, i, inp, n, zero);
+    vec_loadN_vec2(&v_x[i], inp, n, zero);
 
     temp0 += vec_loadN_mult(&va0[i], inp, n, zero);
   } else if (n) {
-    inp[0] = vec_loadNHi_vec(v_x, i, n, zero);
+    inp[0] = vec_loadNHi(&v_x[i], n, zero);
 
     temp0 += vec_loadNHi_mult(&va0[i], inp[0], n, zero);
   }
 
-  y[0] = (alpha * (temp0[0] + temp0[1] + temp0[2] + temp0[3])) + (beta * y[0]);
+  y[0] += (alpha * (temp0[0] + temp0[1] + temp0[2] + temp0[3]));
 }
 
-static void BF16GEMV_T_VSX_2(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha, FLOAT beta)
+static void BF16GEMV_T_VSX_2(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha)
 {
   IFLOAT *a0, *a1;
   vec_bf16 *va0, *va1, *v_x;
@@ -92,7 +92,7 @@ static void BF16GEMV_T_VSX_2(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   BLASLONG i = 0;
 
   for (; i < n8; i++) {
-    vec_load_vec2(v_x, i, inp, zero);
+    vec_load_vec2(&v_x[i], inp, zero);
 
     temp0 += vec_load_mult(&va0[i], inp, zero);
     temp1 += vec_load_mult(&va1[i], inp, zero);
@@ -100,22 +100,22 @@ static void BF16GEMV_T_VSX_2(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
 
   n &= 7;
   if (n > 4) {
-    vec_loadN_vec2(v_x, i, inp, n, zero);
+    vec_loadN_vec2(&v_x[i], inp, n, zero);
 
     temp0 += vec_loadN_mult(&va0[i], inp, n, zero);
     temp1 += vec_loadN_mult(&va1[i], inp, n, zero);
   } else if (n) {
-    inp[0] = vec_loadNHi_vec(v_x, i, n, zero);
+    inp[0] = vec_loadNHi(&v_x[i], n, zero);
 
     temp0 += vec_loadNHi_mult(&va0[i], inp[0], n, zero);
     temp1 += vec_loadNHi_mult(&va1[i], inp[0], n, zero);
   }
 
-  y[0] = (alpha * (temp0[0] + temp0[1] + temp0[2] + temp0[3])) + (beta * y[0]);
-  y[1] = (alpha * (temp1[0] + temp1[1] + temp1[2] + temp1[3])) + (beta * y[1]);
+  y[0] += (alpha * (temp0[0] + temp0[1] + temp0[2] + temp0[3]));
+  y[1] += (alpha * (temp1[0] + temp1[1] + temp1[2] + temp1[3]));
 }
 
-static void BF16GEMV_T_VSX_4(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha, FLOAT beta)
+static void BF16GEMV_T_VSX_4(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha)
 {
   IFLOAT *a0, *a1, *a2, *a3;
   vec_bf16 *va0, *va1, *va2, *va3, *v_x;
@@ -139,7 +139,7 @@ static void BF16GEMV_T_VSX_4(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   BLASLONG i = 0;
 
   for (; i < n8; i++) {
-    vec_load_vec2(v_x, i, inp, zero);
+    vec_load_vec2(&v_x[i], inp, zero);
 
     temp0 += vec_load_mult(&va0[i], inp, zero);
     temp1 += vec_load_mult(&va1[i], inp, zero);
@@ -149,14 +149,14 @@ static void BF16GEMV_T_VSX_4(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
 
   n &= 7;
   if (n > 4) {
-    vec_loadN_vec2(v_x, i, inp, n, zero);
+    vec_loadN_vec2(&v_x[i], inp, n, zero);
 
     temp0 += vec_loadN_mult(&va0[i], inp, n, zero);
     temp1 += vec_loadN_mult(&va1[i], inp, n, zero);
     temp2 += vec_loadN_mult(&va2[i], inp, n, zero);
     temp3 += vec_loadN_mult(&va3[i], inp, n, zero);
   } else if (n) {
-    inp[0] = vec_loadNHi_vec(v_x, i, n, zero);
+    inp[0] = vec_loadNHi(&v_x[i], n, zero);
 
     temp0 += vec_loadNHi_mult(&va0[i], inp[0], n, zero);
     temp1 += vec_loadNHi_mult(&va1[i], inp[0], n, zero);
@@ -166,7 +166,6 @@ static void BF16GEMV_T_VSX_4(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
 
   vec_f32 t0, t1, t2, t3;
   vec_f32 a = { alpha, alpha, alpha, alpha };
-  vec_f32 b = { beta, beta, beta, beta };
   vec_f32 *v_y = (vec_f32 *) y;
 
   t0 = vec_mergeh(temp0, temp2);
@@ -179,11 +178,11 @@ static void BF16GEMV_T_VSX_4(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   temp3 = vec_mergel(t1, t3);
   temp0 += temp1 + temp2 + temp3;
 
-  v_y[0] = (a * temp0) + (b * v_y[0]);
+  v_y[0] += (a * temp0);
 }
 
 #ifdef USE_BFGEMV_8_T_VSX
-static void BF16GEMV_T_VSX_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha, FLOAT beta)
+static void BF16GEMV_T_VSX_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha)
 {
   IFLOAT *a0, *a1, *a2, *a3, *a4, *a5, *a6, *a7;
   vec_bf16 *va0, *va1, *va2, *va3, *va4, *va5, *va6, *va7, *v_x;
@@ -196,16 +195,17 @@ static void BF16GEMV_T_VSX_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   vec_f32 temp6 = { 0, 0, 0, 0 };
   vec_f32 temp7 = { 0, 0, 0, 0 };
   vec_bf16 zero = { 0, 0, 0, 0, 0, 0, 0, 0 };
-  vec_f32 inp[2];
+  vec_f32 inp[2], inp0[2], inp1[2], inp2[2], inp3[2], inp4[2], inp5[2], inp6[2], inp7[2];
 
+  BLASLONG lda4 = lda << 2;
   a0 = ap;
   a1 = ap + lda;
   a2 = a1 + lda;
   a3 = a2 + lda;
-  a4 = a3 + lda;
-  a5 = a4 + lda;
-  a6 = a5 + lda;
-  a7 = a6 + lda;
+  a4 = a0 + lda4;
+  a5 = a1 + lda4;
+  a6 = a2 + lda4;
+  a7 = a3 + lda4;
   va0 = (vec_bf16 *)a0;
   va1 = (vec_bf16 *)a1;
   va2 = (vec_bf16 *)a2;
@@ -219,32 +219,64 @@ static void BF16GEMV_T_VSX_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   BLASLONG i = 0;
 
   for (; i < n8; i++) {
-    vec_load_vec2(v_x, i, inp, zero);
+    vec_load_vec2(&v_x[i], inp, zero);
+    vec_load_vec2(&va0[i], inp0, zero);
+    vec_load_vec2(&va1[i], inp1, zero);
+    vec_load_vec2(&va2[i], inp2, zero);
+    vec_load_vec2(&va3[i], inp3, zero);
+    vec_load_vec2(&va4[i], inp4, zero);
+    vec_load_vec2(&va5[i], inp5, zero);
+    vec_load_vec2(&va6[i], inp6, zero);
+    vec_load_vec2(&va7[i], inp7, zero);
 
-    temp0 += vec_load_mult(&va0[i], inp, zero);
-    temp1 += vec_load_mult(&va1[i], inp, zero);
-    temp2 += vec_load_mult(&va2[i], inp, zero);
-    temp3 += vec_load_mult(&va3[i], inp, zero);
-    temp4 += vec_load_mult(&va4[i], inp, zero);
-    temp5 += vec_load_mult(&va5[i], inp, zero);
-    temp6 += vec_load_mult(&va6[i], inp, zero);
-    temp7 += vec_load_mult(&va7[i], inp, zero);
+    temp0 += (inp[0] * inp0[0]);
+    temp1 += (inp[0] * inp1[0]);
+    temp2 += (inp[0] * inp2[0]);
+    temp3 += (inp[0] * inp3[0]);
+    temp4 += (inp[0] * inp4[0]);
+    temp5 += (inp[0] * inp5[0]);
+    temp6 += (inp[0] * inp6[0]);
+    temp7 += (inp[0] * inp7[0]);
+    temp0 += (inp[1] * inp0[1]);
+    temp1 += (inp[1] * inp1[1]);
+    temp2 += (inp[1] * inp2[1]);
+    temp3 += (inp[1] * inp3[1]);
+    temp4 += (inp[1] * inp4[1]);
+    temp5 += (inp[1] * inp5[1]);
+    temp6 += (inp[1] * inp6[1]);
+    temp7 += (inp[1] * inp7[1]);
   }
 
   n &= 7;
   if (n > 4) {
-    vec_loadN_vec2(v_x, i, inp, n, zero);
+    vec_loadN_vec2(&v_x[i], inp, n, zero);
+    vec_loadN_vec2(&va0[i], inp0, n, zero);
+    vec_loadN_vec2(&va1[i], inp1, n, zero);
+    vec_loadN_vec2(&va2[i], inp2, n, zero);
+    vec_loadN_vec2(&va3[i], inp3, n, zero);
+    vec_loadN_vec2(&va4[i], inp4, n, zero);
+    vec_loadN_vec2(&va5[i], inp5, n, zero);
+    vec_loadN_vec2(&va6[i], inp6, n, zero);
+    vec_loadN_vec2(&va7[i], inp7, n, zero);
 
-    temp0 += vec_loadN_mult(&va0[i], inp, n, zero);
-    temp1 += vec_loadN_mult(&va1[i], inp, n, zero);
-    temp2 += vec_loadN_mult(&va2[i], inp, n, zero);
-    temp3 += vec_loadN_mult(&va3[i], inp, n, zero);
-    temp4 += vec_loadN_mult(&va4[i], inp, n, zero);
-    temp5 += vec_loadN_mult(&va5[i], inp, n, zero);
-    temp6 += vec_loadN_mult(&va6[i], inp, n, zero);
-    temp7 += vec_loadN_mult(&va7[i], inp, n, zero);
+    temp0 += (inp[0] * inp0[0]);
+    temp1 += (inp[0] * inp1[0]);
+    temp2 += (inp[0] * inp2[0]);
+    temp3 += (inp[0] * inp3[0]);
+    temp4 += (inp[0] * inp4[0]);
+    temp5 += (inp[0] * inp5[0]);
+    temp6 += (inp[0] * inp6[0]);
+    temp7 += (inp[0] * inp7[0]);
+    temp0 += (inp[1] * inp0[1]);
+    temp1 += (inp[1] * inp1[1]);
+    temp2 += (inp[1] * inp2[1]);
+    temp3 += (inp[1] * inp3[1]);
+    temp4 += (inp[1] * inp4[1]);
+    temp5 += (inp[1] * inp5[1]);
+    temp6 += (inp[1] * inp6[1]);
+    temp7 += (inp[1] * inp7[1]);
   } else if (n) {
-    inp[0] = vec_loadNHi_vec(v_x, i, n, zero);
+    inp[0] = vec_loadNHi(&v_x[i], n, zero);
 
     temp0 += vec_loadNHi_mult(&va0[i], inp[0], n, zero);
     temp1 += vec_loadNHi_mult(&va1[i], inp[0], n, zero);
@@ -256,9 +288,8 @@ static void BF16GEMV_T_VSX_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
     temp7 += vec_loadNHi_mult(&va7[i], inp[0], n, zero);
   }
 
-  vec_f32 t0, t1, t2, t3;
+  vec_f32 t0, t1, t2, t3, t10, t11, t12, t13;
   vec_f32 a = { alpha, alpha, alpha, alpha };
-  vec_f32 b = { beta, beta, beta, beta };
   vec_f32 *v_y = (vec_f32 *) y;
 
   t0 = vec_mergeh(temp0, temp2);
@@ -271,19 +302,19 @@ static void BF16GEMV_T_VSX_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   temp3 = vec_mergel(t1, t3);
   temp0 += temp1 + temp2 + temp3;
 
-  t0 = vec_mergeh(temp4, temp6);
-  t1 = vec_mergel(temp4, temp6);
-  t2 = vec_mergeh(temp5, temp7);
-  t3 = vec_mergel(temp5, temp7);
-  temp4 = vec_mergeh(t0, t2);
-  temp5 = vec_mergel(t0, t2);
-  temp6 = vec_mergeh(t1, t3);
-  temp7 = vec_mergel(t1, t3);
+  t10 = vec_mergeh(temp4, temp6);
+  t11 = vec_mergel(temp4, temp6);
+  t12 = vec_mergeh(temp5, temp7);
+  t13 = vec_mergel(temp5, temp7);
+  temp4 = vec_mergeh(t10, t12);
+  temp5 = vec_mergel(t10, t12);
+  temp6 = vec_mergeh(t11, t13);
+  temp7 = vec_mergel(t11, t13);
   temp4 += temp5 + temp6 + temp7;
 
   vec_load_pair(inp, v_y);
-  inp[0] = (a * temp0) + (b * inp[0]);
-  inp[1] = (a * temp4) + (b * inp[1]);
+  inp[0] += (a * temp0);
+  inp[1] += (a * temp4);
   vec_store_pair(v_y, inp);
 }
 #endif
