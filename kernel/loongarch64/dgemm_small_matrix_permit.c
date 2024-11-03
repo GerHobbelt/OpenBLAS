@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2016, The OpenBLAS Project
+Copyright (c) 2024, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -27,59 +27,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
+int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, FLOAT beta)
 {
-	BLASLONG i=0;
-	BLASLONG inc_x2;
-	BLASLONG ip = 0;
-	FLOAT temp;
+  double MNK = (double) M * (double) N * (double) K;
 
-	inc_x2 = 2 * inc_x;
-	for ( i=0; i<n; i++ )
-	{
-		if ( da_r == 0.0 )
-		{
-			if ( da_i == 0.0 )
-			{
-				temp = 0.0;
-				x[ip+1] = 0.0 ;
-			}
-			else
-			{
-				temp = - da_i * x[ip+1] ;
-				if (isnan(x[ip]) || isinf(x[ip])) temp = NAN;
-				if (!isinf(x[ip+1]))
-					x[ip+1] = da_i * x[ip]  ;
-				else    x[ip+1] = NAN;
-			}
-		}
-		else
-		{
-			if ( da_i == 0.0 )
-			{
-				temp    = da_r * x[ip]  ;
-				if (!isinf(x[ip+1]))
-					x[ip+1] = da_r * x[ip+1];
-				else    x[ip+1] = NAN;
-			}
-			else
-			{
-				temp    = da_r * x[ip]   - da_i * x[ip+1] ;
-				if (!isinf(x[ip+1]))
-					x[ip+1] = da_r * x[ip+1] + da_i * x[ip]   ;
-				else    x[ip+1] = NAN;
-			}
-		}
-		if ( da_r != da_r ) 
-			x[ip] = da_r;
-		else
-			x[ip]   = temp;
-		
-		ip += inc_x2;
-	}
+  if (transa) {
+    if (MNK <= 24.0 * 24.0 * 24.0)
+      return 1;
+  } else {
+    if (MNK <= 64.0 * 64.0 * 64.0)
+      return 1;
+  }
 
-	return(0);
-
+  return 0;
 }
-
 
