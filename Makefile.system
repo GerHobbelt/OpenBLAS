@@ -1392,15 +1392,17 @@ endif
 endif
 
 ifeq ($(F_COMPILER), CRAY)
-CCOMMON_OPT += -DF_INTERFACE_INTEL
+CCOMMON_OPT += -DF_INTERFACE_CRAYFC
 FCOMMON_OPT += -hnopattern
 ifdef INTERFACE64
 ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -s integer64
 endif
 endif
-ifneq ($(USE_OPENMP), 1)
-FCOMMON_OPT += -O noomp
+ifeq ($(USE_OPENMP), 1)
+FCOMMON_OPT += -fopenmp
+else
+FCOMMON_OPT += -fno-openmp
 endif
 endif
 
@@ -1610,6 +1612,13 @@ endif
 ifneq ($(ARCH), x86_64)
 ifneq ($(ARCH), x86)
 NO_AFFINITY = 1
+endif
+endif
+
+ifeq ($(ARCH), POWER)
+ifeq ($(DEBUG), 1)
+CCOMMON_OPT := $(filter-out -O%, $(CCOMMON_OPT)) -O0
+FCOMMON_OPT := $(filter-out -O%, $(FCOMMON_OPT)) -O0
 endif
 endif
 

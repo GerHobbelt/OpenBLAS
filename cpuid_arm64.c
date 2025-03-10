@@ -127,7 +127,7 @@ static char *cpuname_lower[] = {
 int get_feature(char *search)
 {
 
-#ifdef __linux
+#if defined( __linux ) || defined( __NetBSD__ )
 	FILE *infile;
   	char buffer[2048], *p,*t;
   	p = (char *) NULL ;
@@ -163,7 +163,7 @@ int get_feature(char *search)
 int detect(void)
 {
 
-#ifdef __linux
+#if defined( __linux ) || defined( __NetBSD__ )
 
 	FILE *infile;
 	char buffer[512], *p, *cpu_part = NULL, *cpu_implementer = NULL;
@@ -281,6 +281,7 @@ int detect(void)
 	if (value64 ==131287967|| value64 == 458787763 ) return CPU_VORTEX; //A12/M1
 	if (value64 == 3660830781) return CPU_VORTEX; //A15/M2
 	if (value64 == 2271604202) return CPU_VORTEX; //A16/M3
+	if (value64 == 1867590060) return CPU_VORTEX; //M4
 #endif
 	return CPU_ARMV8;	
 #endif
@@ -313,7 +314,7 @@ void get_cpucount(void)
 {
 int n=0;
 
-#ifdef __linux
+#if defined( __linux ) || defined( __NetBSD__ )
 	FILE *infile;
   	char buffer[2048], *p,*t;
   	p = (char *) NULL ;
@@ -558,6 +559,8 @@ void get_cpuconfig(void)
 	    case CPU_VORTEX:
 		printf("#define VORTEX			      \n");
 #ifdef __APPLE__
+		sysctlbyname("hw.cpufamily",&value64,&length64,NULL,0);
+		if (value64 == 1867590060) printf("#define HAVE_SME 1\n");; //M4
 		sysctlbyname("hw.l1icachesize",&value64,&length64,NULL,0);
 		printf("#define L1_CODE_SIZE	     %lld       \n",value64);
 		sysctlbyname("hw.cachelinesize",&value64,&length64,NULL,0);
@@ -605,7 +608,7 @@ void get_libname(void)
 void get_features(void)
 {
 
-#ifdef __linux
+#if defined( __linux ) || defined( __NetBSD__ )
 	FILE *infile;
   	char buffer[2048], *p,*t;
   	p = (char *) NULL ;
