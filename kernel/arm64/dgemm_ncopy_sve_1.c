@@ -1,5 +1,5 @@
 /***************************************************************************
-(c) RIKEN 2025, 2025. All rights reserved. def_sve_asm_predicate.h 0.3.26
+(c) RIKEN 2025, 2025. All rights reserved. sgemm_ncopy_sve_1.c 0.3.26
 Copyright 2025 FUJITSU limited
 All rights reserved.
 
@@ -31,26 +31,65 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#ifndef __DEF_SVE_ASM_PREDICATE
-#define __DEF_SVE_ASM_PREDICATE
+#include "common.h"
+#include "def_sve_asm.h"
+#include <arm_sve.h>
 
-/* ptrue  all true (no pattern) */
-#define PTRUE_PS(p) PTRUE_PS_base(p)
-#define PTRUE_PS_base(p) \
-  __asm__ __volatile__("\t\t\tptrue "#p".s":::#p);
+int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
+  BLASLONG im, in;
+  FLOAT *a_offset, *a_offset_p;
+  FLOAT *b_offset, *b_offset_p;
+  BLASLONG nvl=svcntd();
+  BLASLONG nul=nvl*4;
 
-#define PTRUE_PD(p) PTRUE_PD_base(p)
-#define PTRUE_PD_base(p) \
-  __asm__ __volatile__("\t\t\tptrue "#p".d":::#p);
+  a_offset = a;
+  a_offset_p = a+lda*2;
+  b_offset = b;
+  b_offset_p = b+m*2;
 
-#define WHILELT_PSX(p,x1,x2) WHILELT_PSX_base(p,x1,x2)
-#define WHILELT_PSX_base(p,x1,x2) \
-__asm__ __volatile__("\t\t\twhilelt "#p".s,%0,%1"::"r"(x1),"r"(x2):"cc",#p);
+  PTRUE_PD(p0);
+  for(in=0;in<n;in++) {
+    for(im=0;im<m-nul+1;im+=nul) {
+      LD1D_ZXI(z0,p0,a_offset,0);
+      LD1D_ZXI(z1,p0,a_offset,1);
+      LD1D_ZXI(z2,p0,a_offset,2);
+      LD1D_ZXI(z3,p0,a_offset,3);
 
-#define WHILELT_PDX(p,x1,x2) WHILELT_PDX_base(p,x1,x2)
-#define WHILELT_PDX_base(p,x1,x2) \
-__asm__ __volatile__("\t\t\twhilelt "#p".d,%0,%1"::"r"(x1),"r"(x2):"cc",#p);
+      ST1D_ZXI(z0,p0,b_offset,0);
+      ST1D_ZXI(z1,p0,b_offset,1);
+      ST1D_ZXI(z2,p0,b_offset,2);
+      ST1D_ZXI(z3,p0,b_offset,3);
+      PRFM_XI(PLDL2KEEP,a_offset_p,0);
+      PRFM_XI(PSTL2KEEP,b_offset_p,0);
+      a_offset+=nul;
+      b_offset+=nul;
+      a_offset_p+=nul;
+      b_offset_p+=nul;
+    }
+    if(m-im>=nvl) {
+      for(;im<m-nvl+1;im+=nvl) {
+        LD1D_ZXI(z0,p0,a_offset,0);
+        ST1D_ZXI(z0,p0,b_offset,0);
+        a_offset+=nvl;
+        b_offset+=nvl;
+        a_offset_p+=nvl;
+        b_offset_p+=nvl;
+      }
+    }
+    if(m-im>0) {
+      WHILELT_PDX(p1,im,m);
+      LD1D_ZXI(z0,p1,a_offset,0);
+      ST1D_ZXI(z0,p1,b_offset,0);
+      a_offset+=m-im;
+      b_offset+=m-im;
+      a_offset_p+=m-im;
+      b_offset_p+=m-im;
+      PRFM_XI(PLDL2KEEP,a_offset_p,-1);
+      PRFM_XI(PSTL2KEEP,b_offset_p,-1);
+    }
+    a_offset+=lda-m; 
+    a_offset_p+=lda-m; 
+  }
 
-#endif  /* __DEF_SVE_ASM_PREDICATE */
-
-
+  return 0;
+}

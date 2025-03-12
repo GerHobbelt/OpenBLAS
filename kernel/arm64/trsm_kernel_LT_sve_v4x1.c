@@ -1,5 +1,5 @@
 /***************************************************************************
-(c) RIKEN 2024, 2024. All rights reserved. trsm_kernel_LT_sve_v4x1.c 0.3.26
+(c) RIKEN 2025, 2025. All rights reserved. trsm_kernel_LT_sve_v4x1.c 0.3.26
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -133,7 +133,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1,
   }
 
 #ifdef DOUBLE
-#error not supported
+  int sve_size = svcntd();
 #else
   int sve_size = svcntw();
 #endif

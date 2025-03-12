@@ -1,5 +1,5 @@
 /***************************************************************************
-(c) RIKEN 2024, 2024. All rights reserved. trsm_utcopy_sve_v4.c 0.3.26
+(c) RIKEN 2025, 2025. All rights reserved. trsm_utcopy_sve_v4.c 0.3.26
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,16 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 
   jj = offset;
 #ifdef DOUBLE
-#error DOUBLE is not supported
+  uint64_t sve_size = svcntd(),sve_size2=sve_size*2,sve_size3=sve_size*3;
+  int64_t js = 0;
+  svbool_t pn1 = svwhilelt_b64((uint64_t)js, (uint64_t)n);
+  svbool_t pn2 = svwhilelt_b64((uint64_t)js+sve_size, (uint64_t)n);
+  svbool_t pn3 = svwhilelt_b64((uint64_t)js+sve_size2, (uint64_t)n);
+  svbool_t pn4 = svwhilelt_b64((uint64_t)js+sve_size3, (uint64_t)n);
+  int n_active = svcntp_b64(svptrue_b64(), pn1)+
+                 svcntp_b64(svptrue_b64(), pn2)+
+                 svcntp_b64(svptrue_b64(), pn3)+
+                 svcntp_b32(svptrue_b32(), pn4);
 #else
   uint32_t sve_size = svcntw(),sve_size2=sve_size*2,sve_size3=sve_size*3;
   int32_t N = n;
@@ -123,7 +132,10 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
       } else {
         if (ii > jj) {
 #ifdef DOUBLE
-#error DOUBLE is not supported
+          svfloat64_t aj_vec1 = svld1(pn1, ao);
+          svfloat64_t aj_vec2 = svld1_vnum(pn2, ao,1);
+          svfloat64_t aj_vec3 = svld1_vnum(pn3, ao,2);
+          svfloat64_t aj_vec4 = svld1_vnum(pn4, ao,3);
 #else
           svfloat32_t aj_vec1 = svld1(pn1, ao);
           svfloat32_t aj_vec2 = svld1_vnum(pn2, ao,1);
@@ -148,7 +160,15 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 
     js += n_active;
 #ifdef DOUBLE
-#error DOUBLE is not supported
+        pn1 = svwhilelt_b64((uint64_t)js, (uint64_t)n);
+        pn2 = svwhilelt_b64((uint64_t)js+sve_size, (uint64_t)n);
+        pn3 = svwhilelt_b64((uint64_t)js+sve_size2, (uint64_t)n);
+        pn4 = svwhilelt_b64((uint64_t)js+sve_size3, (uint64_t)n);
+        n_active = svcntp_b64(svptrue_b64(), pn1)+
+                   svcntp_b64(svptrue_b64(), pn2)+
+                   svcntp_b64(svptrue_b64(), pn3)+
+                   svcntp_b64(svptrue_b64(), pn4);
+  } while (n_active>0);
 #else
         pn1 = svwhilelt_b32((uint64_t)js, (uint64_t)N);
         pn2 = svwhilelt_b32((uint64_t)js+sve_size, (uint64_t)N);

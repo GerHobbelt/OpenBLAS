@@ -3467,8 +3467,8 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 
 /* When all BLAS3 routines are implemeted with SVE, DGEMM_DEFAULT_UNROLL_M should be "sve_vl".
 Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy routines in both directions seperated. */
-#define DGEMM_DEFAULT_UNROLL_M  2 
-#define DGEMM_DEFAULT_UNROLL_N  8
+#define DGEMM_DEFAULT_UNROLL_M  32
+#define DGEMM_DEFAULT_UNROLL_N  5
 
 #define DGEMM_DEFAULT_UNROLL_MN  32
 
@@ -3486,16 +3486,28 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define ZGEMM_DEFAULT_P 128
 
 #define SGEMM_DEFAULT_Q 960
-#define DGEMM_DEFAULT_Q 128
+#define DGEMM_DEFAULT_Q 608
 #define CGEMM_DEFAULT_Q 224
 #define ZGEMM_DEFAULT_Q 112
 
 #define SGEMM_DEFAULT_R 4000
-#define DGEMM_DEFAULT_R 4096
+#define DGEMM_DEFAULT_R 4000
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
 
-#if defined(DOUBLE) || defined(COMPLEX)
+#if defined(COMPLEX)
+
+#else
+#if defined(DOUBLE)
+
+#define DIVIDE_RATE 1
+
+#define GEMM_PARALLEL_REMAINDER_M DGEMM_DEFAULT_UNROLL_M
+#define GEMM_PARALLEL_REMAINDER_N DGEMM_DEFAULT_UNROLL_N
+
+#define TRMM_DEFAULT_P 192
+#define TRMM_DEFAULT_Q 192
+
 #else // SINGLE
 #define DIVIDE_RATE 1
 
@@ -3508,6 +3520,7 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define TRSM_DEFAULT_P 192
 #define TRSM_DEFAULT_Q 320
 
+#endif
 #endif
 
 #elif defined(ARMV8SVE) || defined(ARMV9) || defined(CORTEXA510)|| defined(CORTEXA710) || defined(CORTEXX2) // 128-bit SVE

@@ -1,6 +1,6 @@
 /***************************************************************************
-(c) RIKEN 2025, 2025. All rights reserved. def_sve_asm.h 0.3.26
-Copyright 2024 FUJITSU limited
+(c) RIKEN 2025, 2025. All rights reserved. def_sve_asm_double.h 0.3.26
+Copyright 2025 FUJITSU limited
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -31,46 +31,46 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#ifndef __DEF_SVE_ASM_FLOAT
-#define __DEF_SVE_ASM_FLOAT
+#ifndef __DEF_SVE_ASM_DOUBLE
+#define __DEF_SVE_ASM_DOUBLE
 
 /* fmla(predicated) zds3=zds3+zs1*zs2 p/M */
-#define FMLA_ZSP(zds3,pg,zs1,zs2) FMLA_ZSP_base(zds3,pg,zs1,zs2)
-#define FMLA_ZSP_base(zds3,pg,zs1,zs2) \
-  __asm__ __volatile__("\t\t\tfmla "#zds3".s,"#pg"/M,"#zs1".s,"#zs2".s":::#zs1,#zs2,#zds3,#pg);
+#define FMLA_ZDP(zds3,pg,zs1,zs2) FMLA_ZDP_base(zds3,pg,zs1,zs2)
+#define FMLA_ZDP_base(zds3,pg,zs1,zs2) \
+  __asm__ __volatile__("\t\t\tfmla "#zds3".d,"#pg"/M,"#zs1".d,"#zs2".d":::#zs1,#zs2,#zds3,#pg);
 
 /* fmad(predicated) zds1=zs3+zds1*zs2  p/M */
-#define FMAD_ZSP(zds1,pg,zs2,zs3) FMAD_ZSP_base(zds1,pg,zs2,zs3)
-#define FMAD_ZSP_base(zds1,pg,zs2,zs3) \
-	  __asm__ __volatile__("\t\t\tfmad "#zds1".s,"#pg"/M,"#zs2".s,"#zs3".s":::#zds1,#zs2,#zs3,#pg);
+#define FMAD_ZDP(zds1,pg,zs2,zs3) FMAD_ZDP_base(zds1,pg,zs2,zs3)
+#define FMAD_ZDP_base(zds1,pg,zs2,zs3) \
+  __asm__ __volatile__("\t\t\tfmad "#zds1".d,"#pg"/M,"#zs2".d,"#zs3".d":::#zds1,#zs2,#zs3,#pg);
 
 /* fmul(unpredicated) zd=zs1*zs2 */
-#define FMUL_ZS(zd,zs1,zs2) FMUL_ZS_base(zd,zs1,zs2)
-#define FMUL_ZS_base(zd,zs1,zs2) \
-  __asm__ __volatile__("\t\t\tfmul "#zd".s,"#zs1".s,"#zs2".s":::#zd,#zs1,#zs2);
+#define FMUL_ZD(zd,zs1,zs2) FMUL_ZD_base(zd,zs1,zs2)
+#define FMUL_ZD_base(zd,zs1,zs2) \
+  __asm__ __volatile__("\t\t\tfmul "#zd".d,"#zs1".d,"#zs2".d":::#zd,#zs1,#zs2);
 
 /* fmul(predicated) zds1*=zs2  p/M */
-#define FMUL_ZSP(zds1,pg,zs2) FMUL_ZSP_base(zds1,pg,zs2)
-#define FMUL_ZSP_base(zds1,pg,zs2) \
-  __asm__ __volatile__("\t\t\tfmul "#zds1".s,"#pg"/M,"#zds1".s,"#zs2".s":::#zds1,#zs2,#pg);
+#define FMUL_ZDP(zds1,pg,zs2) FMUL_ZDP_base(zds1,pg,zs2)
+#define FMUL_ZDP_base(zds1,pg,zs2) \
+  __asm__ __volatile__("\t\t\tfmul "#zds1".d,"#pg"/M,"#zds1".d,"#zs2".d":::#zds1,#zs2,#pg);
 
-#define LD1W_ZXI(zt,pg,x1,imm) LD1W_ZXI_base(zt,pg,x1,imm)
-#define LD1W_ZXI_base(zt,pg,x1,imm) \
-__asm__ __volatile__("\t\t\tld1w {"#zt".s},"#pg"/Z,[%0,#"#imm",MUL VL]"::"r"(x1):#zt,#pg);
+#define LD1D_ZXI(zt,pg,x1,imm) LD1D_ZXI_base(zt,pg,x1,imm)
+#define LD1D_ZXI_base(zt,pg,x1,imm) \
+__asm__ __volatile__("\t\t\tld1d {"#zt".d},"#pg"/Z,[%0,#"#imm",MUL VL]"::"r"(x1):#zt,#pg);
 
-#define LD1RW_ZXI(zt,pg,x1,imm) LD1RW_ZXI_base(zt,pg,x1,imm)
-#define LD1RW_ZXI_base(zt,pg,x1,imm) \
-__asm__ __volatile__("\t\t\tld1rw "#zt".s,"#pg"/Z,[%0,#"#imm"]"::"r"(x1):#zt,#pg);
+#define LD1RD_ZXI(zt,pg,x1,imm) LD1RD_ZXI_base(zt,pg,x1,imm)
+#define LD1RD_ZXI_base(zt,pg,x1,imm) \
+__asm__ __volatile__("\t\t\tld1rd {"#zt".d},"#pg"/Z,[%0,#"#imm"]"::"r"(x1):#zt,#pg);
 
-#define ST1W_ZXI(zt,pg,x1,imm) ST1W_ZXI_base(zt,pg,x1,imm)
-#define ST1W_ZXI_base(zt,pg,x1,imm) \
-__asm__ __volatile__("\t\t\tst1w {"#zt".s},"#pg",[%0,#"#imm",MUL VL]"::"r"(x1):"memory",#zt,#pg);
+#define ST1D_ZXI(zt,pg,x1,imm) ST1D_ZXI_base(zt,pg,x1,imm)
+#define ST1D_ZXI_base(zt,pg,x1,imm) \
+__asm__ __volatile__("\t\t\tst1d {"#zt".d},"#pg",[%0,#"#imm",MUL VL]"::"r"(x1):"memory",#zt,#pg);
 
-#define FNEG_ZSP(zd1,pg,zs2) FNEG_ZSP_base(zd1,pg,zs2)
-#define FNEG_ZSP_base(zd1,pg,zs2) \
-  __asm__ __volatile__("\t\t\tfneg "#zd1".s,"#pg"/M,"#zs2".s":::#zd1,#zs2,#pg);
+#define FNEG_ZDP(zd1,pg,zs2) FNEG_ZDP_base(zd1,pg,zs2)
+#define FNEG_ZDP_base(zd1,pg,zs2) \
+  __asm__ __volatile__("\t\t\tfneg "#zd1".d,"#pg"/M,"#zs2".d":::#zd1,#zs2,#pg);
 
-#endif  /* __DEF_SVE_ASM_FLOAT */
+#endif  /* __DEF_SVE_ASM_DOUBLE */
 
 
 

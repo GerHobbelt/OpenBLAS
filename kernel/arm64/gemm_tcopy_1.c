@@ -1,6 +1,6 @@
 /***************************************************************************
-(c) RIKEN 2024, 2024. All rights reserved. sgemm_tcopy_1.c 0.3.26
-Copyright 2024 FUJITSU limited
+(c) RIKEN 2025, 2025. All rights reserved. sgemm_tcopy_1.c 0.3.26
+Copyright 2025 FUJITSU limited
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ int CNAME(BLASLONG n, BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b)
 			}
 		}
 		mii=im;
-		for(im=mii;im<=m;im++) {
+		for(im=mii;im<m;im++) {
 			for(iin=0;iin<NB;iin++) {
 				B(in+iin,im)=A(im,in+iin);
 			}

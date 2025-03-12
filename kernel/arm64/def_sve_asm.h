@@ -1,6 +1,6 @@
 /***************************************************************************
-Copyright 2024 RIKEN
-Copyright 2024 FUJITSU limited
+(c) RIKEN 2025, 2025. All rights reserved. def_sve_asm.h 0.3.26
+Copyright 2025 FUJITSU limited
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define DUP_ZSI_base(Z,X) \
 	        __asm__ __volatile__("\t\t\tdup\t"#Z".s,#"#X:::#Z);
 
+#define DUP_ZDI(Z,X) DUP_ZDI_base(Z,X)
+#define DUP_ZDI_base(Z,X) \
+	        __asm__ __volatile__("\t\t\tdup\t"#Z".d,#"#X:::#Z);
+
 #define PLDL1KEEP 0
 #define PLDL1STRM 1
 #define PLDL2KEEP 2
@@ -68,6 +72,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PSTL3STRM 13
 
 #include "def_sve_asm_float.h"
+#include "def_sve_asm_double.h"
 #include "def_sve_asm_predicate.h"
 
 #endif   /* __DEF_SVE_ASM_INLINE */
