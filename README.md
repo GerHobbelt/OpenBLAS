@@ -4,7 +4,9 @@ OpenBLAS
 This is a fork of the [OpenBLAS](https://github.com/OpenMathLib/OpenBLAS) and has been improved performance for the FUJITSU A64FX processor.
 
 The following routine is tuned for A64FX.
+
 * SGEMM
+* DGEMM
 
 # Prerequisites
 
@@ -72,17 +74,19 @@ It is recommended to use large pages for performance.
 For Technical Computing Suite environments, HPC extension large page library can be used
 by adding `-L/opt/FJSVxos/mmm/lib64 -lmpg -Wl,-T/opt/FJSVxos/mmm/util/bss-2mb.lds ` to the options. Specify this option before any other libraries.
 ```
-gcc  a.c -L/opt/FJSVxos/mmm/lib64 -lmpg -Wl,-T/opt/FJSVxos/mmm/util/bss-2mb.lds -I$INSTALL_PATH/include -L$INSTALL_PATH/lib  -lopenblas
+$ gcc  a.c -L/opt/FJSVxos/mmm/lib64 -lmpg -Wl,-T/opt/FJSVxos/mmm/util/bss-2mb.lds -I$INSTALL_PATH/include -L$INSTALL_PATH/lib  -lopenblas
 ```
 
 # Performance
 
-The OpenBLAS library in this product improves the performance of SGEMM as follows:
+The OpenBLAS library in this product improves the performance of SGEMM and DGEMM as follows:
 
 | Library    | Routine | Parameters                | # of cores | Original OpenBLAS | OpenBLAS tuned for A64FX |
 |------------|---------|---------------------------|------------|-------------------|--------------------------|
 | Sequential | SGEMM   | No Transpose, M=N=K=5000  | 1 core     | 78 GFlops         | 108 GFlops               | 
+|            | DGEMM   | No Transpose, M=N=K=5000  | 1 cores    | 36  GFlops        |  51 GFlops               |
 | OpenMP     | SGEMM   | No Transpose, M=N=K=10000 | 12 cores   | 827 GFlops        | 1267 GFlops              |
+|            | DGEMM   | No Transpose, M=N=K=10000 | 12 cores   | 373 GFlops        |  572 GFlops              |
 
 # Restrictions
 
