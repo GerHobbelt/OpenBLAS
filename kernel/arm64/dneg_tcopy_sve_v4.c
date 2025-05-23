@@ -71,16 +71,16 @@ int CNAME(BLASLONG k,BLASLONG m,FLOAT *a,BLASLONG lda,FLOAT *aw)
 				PRFM_XI(PLDL2STRM,apre0,0);
 				PRFM_XI(PLDL2STRM,apre1,0);
 
-				PRFM_XI(PLDL2STRM,apre0,255);
-				PRFM_XI(PLDL2STRM,apre1,255);
+				PRFUM_XI(PLDL2STRM,apre0,255);
+				PRFUM_XI(PLDL2STRM,apre1,255);
 
 				apre0=ap0+lda*2;
 				apre1=ap1+lda*2;
 				PRFM_XI(PLDL1STRM,apre0,0);
 				PRFM_XI(PLDL1STRM,apre1,0);
 
-				PRFM_XI(PLDL1STRM,apre0,255);
-				PRFM_XI(PLDL1STRM,apre1,255);
+				PRFUM_XI(PLDL1STRM,apre0,255);
+				PRFUM_XI(PLDL1STRM,apre1,255);
 
 				LD1D_ZXI(z0,p0,ap0,0);
 				LD1D_ZXI(z1,p0,ap0,1);

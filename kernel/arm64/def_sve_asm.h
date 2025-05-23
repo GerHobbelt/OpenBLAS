@@ -34,10 +34,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __DEF_SVE_ASM_INLINE
 #define __DEF_SVE_ASM_INLINE
 
-
+// Argument i must be a multiple of 8 in the range 0 to 32760
 #define PRFM_XI(prfop,x,i) PRFM_XI_base(prfop,x,i)
 #define PRFM_XI_base(prfop,x,i) \
   __asm__ __volatile__("\t\t\tprfm "#prfop",[%0,#"#i"]"::"r"(x));
+
+// Argument i is in the range -256 to 255
+#define PRFUM_XI(prfop,x,i) PRFUM_XI_base(prfop,x,i)
+#define PRFUM_XI_base(prfop,x,i) \
+  __asm__ __volatile__("\t\t\tprfum "#prfop",[%0,#"#i"]"::"r"(x));
 
 #define PRFM_XXLSL3(prfop,x,i) PRFM_XXLSL3_base(prfop,x,i)
 #define PRFM_XXLSL3_base(prfop,x,i) \

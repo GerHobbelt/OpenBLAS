@@ -84,8 +84,8 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
       b_offset+=m-im;
       a_offset_p+=m-im;
       b_offset_p+=m-im;
-      PRFM_XI(PLDL2KEEP,a_offset_p,-1);
-      PRFM_XI(PSTL2KEEP,b_offset_p,-1);
+      PRFUM_XI(PLDL2KEEP,a_offset_p,-1);
+      PRFUM_XI(PSTL2KEEP,b_offset_p,-1);
     }
     a_offset+=lda-m; 
     a_offset_p+=lda-m; 
