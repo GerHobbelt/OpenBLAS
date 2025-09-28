@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2020,2025 The OpenBLAS Project
+Copyright (c) 2025 The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -17,24 +17,22 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-#include <stdio.h>
-#include <stdint.h>
 #include "../common.h"
+#include <stdint.h>
+#include <stdio.h>
 
 #include "test_helpers.h"
 
-#define SGEMM   BLASFUNC(sgemm)
-#define SBGEMM   BLASFUNC(sbgemm)
-#define SGEMV   BLASFUNC(sgemv)
-#define SBGEMV   BLASFUNC(sbgemv)
-#define SBGEMM_LARGEST  256
+#define SGEMM BLASFUNC(sgemm)
+#define BGEMM BLASFUNC(bgemm)
+#define BGEMM_LARGEST 256
 
 int
 main (int argc, char *argv[])
@@ -42,26 +40,30 @@ main (int argc, char *argv[])
   blasint m, n, k;
   int i, j, l;
   blasint x, y;
+  blasint one = 1;
   int ret = 0;
-  int loop = SBGEMM_LARGEST;
+  int loop = BGEMM_LARGEST;
   char transA = 'N', transB = 'N';
   float alpha = 1.0, beta = 0.0;
+  bfloat16 alpha_bf16;
+  sbstobf16_(&one, &alpha, &one, &alpha_bf16, &one);
+  bfloat16 beta_bf16;
+  sbstobf16_(&one, &beta, &one, &beta_bf16, &one);
 
   for (x = 0; x <= loop; x++)
   {
-    if ((x > 100) && (x != SBGEMM_LARGEST)) continue;
+    if ((x > 100) && (x != BGEMM_LARGEST)) continue;
     m = k = n = x;
     float *A = (float *)malloc_safe(m * k * sizeof(FLOAT));
     float *B = (float *)malloc_safe(k * n * sizeof(FLOAT));
     float *C = (float *)malloc_safe(m * n * sizeof(FLOAT));
     bfloat16 *AA = (bfloat16 *)malloc_safe(m * k * sizeof(bfloat16));
     bfloat16 *BB = (bfloat16 *)malloc_safe(k * n * sizeof(bfloat16));
-    float *DD = (float *)malloc_safe(m * n * sizeof(FLOAT));
-    float *CC = (float *)malloc_safe(m * n * sizeof(FLOAT));
+    bfloat16 *CC = (bfloat16 *)malloc_safe(k * n * sizeof(bfloat16));
+    FLOAT *DD = (FLOAT *)malloc_safe(m * n * sizeof(FLOAT));
     if ((A == NULL) || (B == NULL) || (C == NULL) || (AA == NULL) || (BB == NULL) ||
         (DD == NULL) || (CC == NULL))
       return 1;
-    blasint one=1;
 
     for (j = 0; j < m; j++)
     {
@@ -92,14 +94,14 @@ main (int argc, char *argv[])
         transB = 'T';
       }
 
-      memset(CC, 0, m * n * sizeof(FLOAT));
+      memset(CC, 0, m * n * sizeof(bfloat16));
       memset(DD, 0, m * n * sizeof(FLOAT));
       memset(C, 0, m * n * sizeof(FLOAT));
 
       SGEMM (&transA, &transB, &m, &n, &k, &alpha, A,
         &m, B, &k, &beta, C, &m);
-      SBGEMM (&transA, &transB, &m, &n, &k, &alpha, (bfloat16*) AA,
-        &m, (bfloat16*)BB, &k, &beta, CC, &m);
+      BGEMM (&transA, &transB, &m, &n, &k, &alpha_bf16, (bfloat16*) AA,
+        &m, (bfloat16*)BB, &k, &beta_bf16, (bfloat16*)CC, &m);
 
       for (i = 0; i < n; i++)
         for (j = 0; j < m; j++)
@@ -122,12 +124,18 @@ main (int argc, char *argv[])
               DD[i * m + j] +=
                 float16to32 (AA[k * j + l]) * float16to32 (BB[i + l * n]);
             }
-          if (!is_close(CC[i * m + j], C[i * m + j], 0.01, 0.001)) {
+          if (!is_close(float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(C[i * m + j]), 0.01, 0.001)) {
+            printf("Mismatch at i=%d, j=%d, k=%d: CC=%.6f, C=%.6f\n",
+                    i, j, k, float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(C[i * m + j]));
             ret++;
           }
-          if (!is_close(CC[i * m + j], DD[i * m + j], 0.001, 0.0001)) {
+
+          if (!is_close(float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(DD[i * m + j]), 0.0001, 0.00001)) {
+            printf("Mismatch at i=%d, j=%d, k=%d: CC=%.6f, DD=%.6f\n",
+                    i, j, k, float16to32(CC[i * m + j]), truncate_float32_to_bfloat16(DD[i * m + j]));
             ret++;
           }
+            
         }
     }
     free(A);
@@ -135,12 +143,12 @@ main (int argc, char *argv[])
     free(C);
     free(AA);
     free(BB);
-    free(DD);
     free(CC);
+    free(DD);
   }
 
   if (ret != 0) {
-    fprintf (stderr, "FATAL ERROR SBGEMM - Return code: %d\n", ret);
+    fprintf (stderr, "FATAL ERROR BGEMM - Return code: %d\n", ret);
   }
 
   return ret;
