@@ -270,6 +270,7 @@ SMALL_MATRIX_OPT = 1
 BUILD_BFLOAT16 = 1
 else ifeq ($(ARCH), arm64)
 SMALL_MATRIX_OPT = 1
+BUILD_BFLOAT16 = 1
 endif
 ifeq ($(ARCH), loongarch64)
 SMALL_MATRIX_OPT = 1
@@ -277,6 +278,7 @@ endif
 ifeq ($(ARCH), arm64)
 GEMM_GEMV_FORWARD = 1
 SBGEMM_GEMV_FORWARD = 1
+BGEMM_GEMV_FORWARD = 1
 endif
 ifeq ($(ARCH), riscv)
 GEMM_GEMV_FORWARD = 1
@@ -295,6 +297,9 @@ CCOMMON_OPT += -DGEMM_GEMV_FORWARD
 endif
 ifeq ($(SBGEMM_GEMV_FORWARD), 1)
 CCOMMON_OPT += -DSBGEMM_GEMV_FORWARD
+endif
+ifeq ($(BGEMM_GEMV_FORWARD), 1)
+CCOMMON_OPT += -DBGEMM_GEMV_FORWARD
 endif
 endif
 
@@ -421,10 +426,8 @@ ifeq ($(OSNAME), Darwin)
 ifndef MACOSX_DEPLOYMENT_TARGET
 ifeq ($(ARCH), arm64)
 export MACOSX_DEPLOYMENT_TARGET=11.0
-ifeq ($(C_COMPILER), GCC)
 export NO_SVE = 1
 export NO_SME = 1
-endif
 else
 export MACOSX_DEPLOYMENT_TARGET=10.8
 endif

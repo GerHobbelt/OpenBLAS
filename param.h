@@ -3636,7 +3636,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
 
-#elif defined(NEOVERSEN2)
+#elif defined(NEOVERSEN2) || defined(NEOVERSEV2)
 
 #if defined(XDOUBLE) || defined(DOUBLE)
 #define SWITCH_RATIO            8
@@ -3644,11 +3644,17 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define SWITCH_RATIO            16
 #endif
 
-#undef SBGEMM_ALIGN_K
-#define SBGEMM_ALIGN_K 4
+#undef BGEMM_ALIGN_K
+#undef BGEMM_DEFAULT_UNROLL_M
+#undef BGEMM_DEFAULT_UNROLL_N
+#define BGEMM_ALIGN_K 4
+#define BGEMM_DEFAULT_UNROLL_M 8
+#define BGEMM_DEFAULT_UNROLL_N 4
 
+#undef SBGEMM_ALIGN_K
 #undef SBGEMM_DEFAULT_UNROLL_M
 #undef SBGEMM_DEFAULT_UNROLL_N
+#define SBGEMM_ALIGN_K 4
 #define SBGEMM_DEFAULT_UNROLL_M 8
 #define SBGEMM_DEFAULT_UNROLL_N 4
 
