@@ -216,8 +216,8 @@ gotoblas_t TABLE_NAME = {
 #endif
 #ifdef ARCH_ARM64
   sgemm_directTS,
-  sgemm_direct_alpha_betaTS,
   sgemm_direct_performantTS,	
+  sgemm_direct_alpha_betaTS,
   ssymm_direct_alpha_betaLUTS,
   ssymm_direct_alpha_betaLLTS,
   strmm_direct_LNUNTS,
@@ -228,6 +228,10 @@ gotoblas_t TABLE_NAME = {
   ssyrk_direct_alpha_betaUTTS,
   ssyrk_direct_alpha_betaLNTS,
   ssyrk_direct_alpha_betaLTTS,
+  ssyr2k_direct_alpha_betaUNTS,
+  ssyr2k_direct_alpha_betaUTTS,
+  ssyr2k_direct_alpha_betaLNTS,
+  ssyr2k_direct_alpha_betaLTTS,
 #endif
 
   sgemm_kernelTS, sgemm_betaTS,
