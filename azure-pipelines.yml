@@ -91,6 +91,7 @@ jobs:
       openblas_utest.exe
 
 - job: Windows_mingw_gmake
+  timeoutInMinutes: 100
   pool:
      vmImage: 'windows-latest'
   steps:   

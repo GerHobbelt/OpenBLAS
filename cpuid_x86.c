@@ -1563,6 +1563,7 @@ int get_cpuname(void){
         break;
       case 11: //family 6 exmodel 11
         switch (model) {
+		  case 5: // Arrow Lake H/U
           case 7: // Raptor Lake
           case 10:
           case 15:
@@ -1578,8 +1579,17 @@ int get_cpuname(void){
         break;
       case 12: //family 6 exmodel 12
 	switch (model) {
+	  case 12: // Panther Lake
+            if(support_avx2())
+              return CPUTYPE_HASWELL;
+	    if(support_avx())
+	      return CPUTYPE_SANDYBRIDGE;
+            else
+	      return CPUTYPE_NEHALEM;
+            break;
 	  case 15:
 	  case 6: // Arrow Lake
+	  case 5:
 	    if(support_avx512())
               return CPUTYPE_SAPPHIRERAPIDS;
             if(support_avx2())
@@ -2410,6 +2420,7 @@ int get_coretype(void){
 
       case 11:
 	switch (model) {
+	  case 5: // Arrow Lake H/U
 	  case 7: // Raptor Lake
           case 10:
           case 15:
@@ -2426,6 +2437,7 @@ int get_coretype(void){
 	}
       case 12:
 	switch (model) {
+	  case 5:
 	  case 6: // Arrow Lake
 	  if(support_amx_bf16())
 	    return CORE_SAPPHIRERAPIDS;
@@ -2439,6 +2451,14 @@ int get_coretype(void){
 	    return CORE_SANDYBRIDGE;
 	  else
 	    return CORE_NEHALEM;
+          break;
+          case 12: // Panther Lake
+	  if(support_avx2())
+            return CORE_HASWELL;
+	  if(support_avx())
+	    return CORE_SANDYBRIDGE;
+	  else
+	  return CORE_NEHALEM;
 	}
       }
     case 15:
