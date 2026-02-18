@@ -303,6 +303,15 @@ FCOMMON_OPT += -march=armv8.3-a
 endif
 endif
 
+ifeq ($(CORE), VORTEXM4)
+ifneq ($(C_COMPILER), GCC)
+CCOMMON_OPT += -march=armv8.4-a+sme
+else
+CCOMMON_OPT += -march=armv8.4-a
+endif
+FCOMMON_OPT += -march=armv8.4-a
+endif
+
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ9) $(ISCLANG)))
 ifeq ($(CORE), TSV110)
 CCOMMON_OPT += -march=armv8.2-a -mtune=tsv110

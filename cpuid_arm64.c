@@ -82,6 +82,7 @@ size_t length64=sizeof(value64);
 #define CPU_AMPERE1      25
 // Apple
 #define CPU_VORTEX       13
+#define CPU_VORTEXM4     26 
 // Fujitsu
 #define CPU_A64FX	 15
 // Phytium
@@ -113,7 +114,8 @@ static char *cpuname[] = {
   "FT2000",
   "CORTEXA76",
   "NEOVERSEV2",
-  "AMPERE1"
+  "AMPERE1",
+  "VORTEXM4",
 };
 
 static char *cpuname_lower[] = {
@@ -143,12 +145,14 @@ static char *cpuname_lower[] = {
   "cortexa76",
   "neoversev2",
   "ampere1",
-  "ampere1a"
+  "vortexm4"
 };
 
 static int cpulowperf=0;
 static int cpumidperf=0;
 static int cpuhiperf=0;
+
+int aliased = 0;
 
 int get_feature(char *search)
 {
@@ -400,7 +404,8 @@ int detect(void)
 	if (value64 ==131287967|| value64 == 458787763 ) return CPU_VORTEX; //A12/M1
 	if (value64 == 3660830781) return CPU_VORTEX; //A15/M2
         if (value64 == 2271604202) return CPU_VORTEX; //A16/M3
-        if (value64 == 1867590060) return CPU_VORTEX; //M4
+        if (value64 == 1867590060) return CPU_VORTEXM4; //M4
+	    if (value64 == 492472296) return CPU_VORTEXM4; //M5
 #else
 #ifdef OS_WINDOWS
 	HKEY reghandle;
@@ -418,7 +423,10 @@ int detect(void)
 	if (errcode != ERROR_SUCCESS) wprintf(L"Error reading cpuname from registry:%x\n",errcode);
 //wprintf(stderr,L"%s\n",(PWSTR)valstring);
 	RegCloseKey(reghandle);
-	if (strstr(valstring, "Snapdragon(R) X Elite")) return CPU_NEOVERSEN1;
+	if (strstr(valstring, "Snapdragon(R) X Elite")) {
+		aliased = 1;
+		return CPU_NEOVERSEN1;
+	}
 	if (strstr(valstring, "Ampere(R) Altra")) return CPU_NEOVERSEN1;
 	if (strstr(valstring, "Snapdragon (TM) 8cx Gen 3")) return CPU_CORTEXX1;
 	if (strstr(valstring, "Snapdragon Compute Platform")) return CPU_CORTEXX1;
@@ -541,6 +549,7 @@ void get_cpuconfig(void)
 		break;
 	    case CPU_NEOVERSEN1:
 		printf("#define %s\n", cpuname[d]);
+		if (aliased == 0) {
 		printf("#define L1_CODE_SIZE 65536\n");
 		printf("#define L1_CODE_LINESIZE 64\n");
 		printf("#define L1_CODE_ASSOCIATIVE 4\n");
@@ -552,6 +561,23 @@ void get_cpuconfig(void)
 		printf("#define L2_ASSOCIATIVE 8\n");
 		printf("#define DTB_DEFAULT_ENTRIES 48\n");
 		printf("#define DTB_SIZE 4096\n");
+		} else {
+		printf("#define L1_CODE_SIZE 196608\n");
+		printf("#define L1_CODE_LINESIZE 64\n");
+		printf("#define L1_CODE_ASSOCIATIVE 6\n");
+		printf("#define L1_DATA_SIZE 98304\n");
+		printf("#define L1_DATA_LINESIZE 64\n");
+		printf("#define L1_DATA_ASSOCIATIVE 6\n");
+		printf("#define L2_SIZE 12582912\n");
+		printf("#define L2_LINESIZE 32\n");
+		printf("#define L2_ASSOCIATIVE 12\n");
+		printf("#define ITB_SIZE 4096\n");
+		printf("#define ITB_ASSOCIATIVE 8\n");
+		printf("#define ITB_DEFAULT_ENTRIES 256\n");
+		printf("#define DTB_DEFAULT_ENTRIES 224\n");
+		printf("#define DTB_ASSOCIATIVE 7\n");
+		printf("#define DTB_SIZE 4096\n");
+		}	
 		break;
 
 	    case CPU_NEOVERSEV1:
@@ -726,6 +752,29 @@ void get_cpuconfig(void)
 		break;
 	    case CPU_VORTEX:
 		printf("#define VORTEX			      \n");
+#ifdef __APPLE__
+		length64 = sizeof(value64);
+		sysctlbyname("hw.l1icachesize",&value64,&length64,NULL,0);
+		printf("#define L1_CODE_SIZE	     %lld       \n",value64);
+		length64 = sizeof(value64);
+		sysctlbyname("hw.cachelinesize",&value64,&length64,NULL,0);
+		printf("#define L1_CODE_LINESIZE     %lld       \n",value64);
+		printf("#define L1_DATA_LINESIZE     %lld       \n",value64);
+		length64 = sizeof(value64);
+		sysctlbyname("hw.l1dcachesize",&value64,&length64,NULL,0);
+		printf("#define L1_DATA_SIZE	     %lld       \n",value64);
+		length64 = sizeof(value64);
+		sysctlbyname("hw.l2cachesize",&value64,&length64,NULL,0);
+		printf("#define L2_SIZE	     %lld       \n",value64);
+#endif	
+		printf("#define DTB_DEFAULT_ENTRIES  64       \n");
+		printf("#define DTB_SIZE             4096     \n");
+		break;
+	    case CPU_VORTEXM4:
+		printf("#define VORTEXM4		      \n");
+#ifdef __ARM_FEATURE_LOCALLY_STREAMING
+		printf("#define HAVE_SME 1		      \n");
+#endif
 #ifdef __APPLE__
 		length64 = sizeof(value64);
 		sysctlbyname("hw.l1icachesize",&value64,&length64,NULL,0);
