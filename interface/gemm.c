@@ -184,11 +184,11 @@ static int init_amxtile_permission() {
 }
 #endif
 
-#ifdef SMP
 #ifdef DYNAMIC_ARCH
 extern char* gotoblas_corename(void);
 #endif
 
+#ifdef SMP
 #if defined(DYNAMIC_ARCH) || defined(NEOVERSEV1)
 static inline int get_gemm_optimal_nthreads_neoversev1(double MNK, int ncpu) {
   return

@@ -1194,7 +1194,7 @@ static void init_parameter(void) {
 
       TABLE_NAME.dgemm_p = 112;
       TABLE_NAME.dgemm_q = 289;
-      TABLE_NAME.dgemm_r = 342;
+      TABLE_NAME.dgemm_r = 353;
 
       TABLE_NAME.cgemm_p = 128;
       TABLE_NAME.cgemm_q = 256;

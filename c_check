@@ -23,6 +23,7 @@ config="$2"
 compiler_name="$3"
 shift 3
 flags="$*"
+is_ios=false
 
 # First, we need to know the target OS and compiler name
 {
@@ -78,6 +79,7 @@ case "$data" in *OS_CYGWIN_NT*) os=CYGWIN_NT ;; esac
 case "$data" in *OS_INTERIX*) os=Interix ;; esac
 case "$data" in *OS_ANDROID*) os=Android ;; esac
 case "$data" in *OS_HAIKU*) os=Haiku ;; esac
+case "$data" in *OS_IOS*) is_ios=true ;; esac
 
 case "$data" in
     *ARCH_X86_64*) architecture=x86_64 ;;
@@ -416,6 +418,8 @@ fi
 [ "$os" != "$hostos" ] && cross=1
 [ "$os" = "Android" ] && [ "$hostos" = "Linux" ] && [ -n "$TERMUX_APP_PID" ] \
     && cross=0
+
+[ "$is_ios" = true ] && cross=1
 
 [ "$USE_OPENMP" != 1 ] && openmp=''
 
