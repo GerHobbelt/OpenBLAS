@@ -272,3 +272,6 @@ In chronological order:
 
 * Anna Mayne <anna.mayne@arm.com>
   * [2025-11-19] Update thread throttling profile for SGEMV on NEOVERSEV1 and NEOVERSEV2
+
+* Fadi Arafeh <fadi.arafeh@arm.com>
+  * [2026-03-05] Accelerate SVE128 SBGEMM/BGEMM

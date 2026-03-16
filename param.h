@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011-2023, 2025 The OpenBLAS Project
+Copyright (c) 2011-2023, 2025-2026 The OpenBLAS Project
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -3662,6 +3662,8 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 
 #elif defined(NEOVERSEN2) || defined(NEOVERSEV2)
 
+#define GEMM_DIVIDE_LIMIT       3
+
 #if defined(XDOUBLE) || defined(DOUBLE)
 #define SWITCH_RATIO            8
 #else
@@ -3673,14 +3675,14 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #undef BGEMM_DEFAULT_UNROLL_N
 #define BGEMM_ALIGN_K 4
 #define BGEMM_DEFAULT_UNROLL_M 8
-#define BGEMM_DEFAULT_UNROLL_N 4
+#define BGEMM_DEFAULT_UNROLL_N 8
 
 #undef SBGEMM_ALIGN_K
 #undef SBGEMM_DEFAULT_UNROLL_M
 #undef SBGEMM_DEFAULT_UNROLL_N
 #define SBGEMM_ALIGN_K 4
 #define SBGEMM_DEFAULT_UNROLL_M 8
-#define SBGEMM_DEFAULT_UNROLL_N 4
+#define SBGEMM_DEFAULT_UNROLL_N 8
 
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4

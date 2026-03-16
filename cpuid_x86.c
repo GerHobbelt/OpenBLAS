@@ -492,7 +492,7 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
 
     for (i = 0; i < 15; i++) {
       switch (info[i]) {
-        /* This table is from http://www.sandpile.org/ia32/cpuid.htm */
+        /* This table is from http://www.sandpile.org/x86/cpuid.htm */
 
       case 0x01:
         ITB.size        = 4;
@@ -539,6 +539,11 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         LD1.associative = 2;
         LD1.linesize    = 32;
         break;
+      case 0x0b:
+	LITB.size	= 4096;
+	LITB.associative= 4;
+	LITB.linesize   = 4;
+	break;
       case 0x0c:
         LD1.size        = 16;
         LD1.associative = 4;
@@ -569,6 +574,11 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         L2.associative = 6;
         L2.linesize    = 64;
         break;
+      case 0x1d:
+	L2.size        = 128;
+	L2.associative = 2;
+	L2.linesize    = 64;
+	break;
       case 0x21:
         L2.size        = 256;
         L2.associative = 8;
@@ -584,6 +594,10 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         L3.associative = 8;
         L3.linesize    = 64;
         break;
+      case 0x24:
+	L2.size        = 1024;
+	L2.associative = 16;
+	L2.linesize    = 64;
       case 0x25:
         L3.size        = 2048;
         L3.associative = 8;
@@ -634,6 +648,9 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         L2.associative = 4;
         L2.linesize    = 64;
         break;
+      case 0x40:
+	// no integrated L2 or L3 cache, old P4/P6
+	break;
       case 0x41:
         L2.size        = 128;
         L2.associative = 4;
@@ -754,10 +771,20 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         LDTB.linesize    = 16;
         break;
       case 0x57:
-        LDTB.size        = 4096;
-        LDTB.associative = 4;
-        LDTB.linesize    = 16;
+        DTB.size        = 4;
+        DTB.associative = 4;
+        DTB.linesize    = 16;
         break;
+      case 0x59:
+	DTB.size        = 4;
+	DTB.associative = 0;
+	DTB.linesize    = 16;
+	break;
+      case 0x5a:
+	LDTB.size        = 4096;
+	LDTB.associative = 4;
+	LDTB.linesize    = 32;
+	break;
       case 0x5b:
         DTB.size         = 4;
         DTB.associative  = 0;
@@ -790,6 +817,10 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         LD1.associative = 8;
         LD1.linesize    = 64;
         break;
+      case 0x61:
+	ITB.size        = 4096;
+	ITB.associative = 0;
+	ITB.linesize    = 48;
       case 0x63:
         DTB.size         = 2048;
         DTB.associative  = 4;
@@ -798,6 +829,10 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         LDTB.associative = 4;
         LDTB.linesize    = 32;
         break;
+      case 0x64:
+	DTB.size        = 4;
+	DTB.associative = 4;
+	DTB.linesize    = 512;
       case 0x66:
         LD1.size        = 8;
         LD1.associative = 4;
@@ -813,6 +848,26 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         LD1.associative = 4;
         LD1.linesize    = 64;
         break;
+      case 0x6a:
+        DTB.size        = 4;
+	DTB.associative = 8;
+	DTB.linesize    = 64;
+	break;
+      case 0x6b:
+	DTB.size        = 4;
+	DTB.associative = 8;
+	DTB.linesize    = 256;
+	break;
+      case 0x6c:
+        LDTB.size       = 4096;
+	LDTB.associative= 8;
+	LDTB.linesize   = 126;
+	break;
+      case 0x6d:
+	LDTB.size       = 1048576;
+	LDTB.associative= 0;
+	LDTB.linesize   = 16;
+	break;
       case 0x70:
         LC1.size        = 12;
         LC1.associative = 8;
@@ -882,6 +937,11 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         L2.associative = 2;
         L2.linesize    = 64;
         break;
+      case 0x80:
+	L2.size        = 512;
+	L2.associative = 8;
+	L2.linesize    = 64;
+	break;
       case 0x81:
         L2.size        = 128;
         L2.associative = 8;
@@ -952,6 +1012,11 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         L2DTB.associative = 0;
         L2DTB.linesize    = 96;
         break;
+      case 0xa0:
+	DTB.size        = 4;
+	DTB.associative = 0;
+	DTB.linesize    = 32;
+	break;
       case 0xb0:
         ITB.size        = 4;
         ITB.associative = 4;
@@ -977,11 +1042,54 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         DTB.associative = 4;
         DTB.linesize    = 256;
         break;
+      case 0xb5:
+	ITB.size        = 4;
+	ITB.associative = 8;
+	ITB.linesize    = 64;
+	break;
+      case 0xb6:
+	ITB.size        = 4;
+	ITB.associative = 8;
+	ITB.linesize    = 128;
+	break;
       case 0xba:
         DTB.size        = 4;
         DTB.associative = 4;
         DTB.linesize    = 64;
         break;
+      case 0xc0:
+	DTB.size        = 4;
+	DTB.associative = 4;
+	DTB.linesize    = 8;
+	LDTB.size       = 4096;
+	LDTB.associative= 4;
+	LDTB.linesize   = 8;
+	break;
+      case 0xc1:
+        L2.size        = 4;
+	L2.associative = 8;
+	L2.linesize    = 1024;
+	break;
+      case 0xc2:
+	DTB.size       = 2048;
+	DTB.associative= 4;
+	DTB.linesize   = 16;
+	break;
+      case 0xc3:
+        L2.size        = 4;
+	L2.associative = 6;
+	L2.linesize    = 1536;
+	break;
+      case 0xc4:
+	DTB.size       = 2048;
+	DTB.associative= 4;
+	DTB.linesize   = 32;
+	break;
+      case 0xca:
+	L2.size        = 4;
+	L2.associative = 4;
+	L2.linesize    = 512;
+	break;
       case 0xd0:
         L3.size        = 512;
         L3.associative = 4;
@@ -1013,17 +1121,17 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         L3.linesize    = 64;
         break;
       case 0xdc:
-        L3.size        = 2048;
+        L3.size        = 1536;
         L3.associative = 12;
         L3.linesize    = 64;
         break;
       case 0xdd:
-        L3.size        = 4096;
+        L3.size        = 3072;
         L3.associative = 12;
         L3.linesize    = 64;
         break;
       case 0xde:
-        L3.size        = 8192;
+        L3.size        = 6144;
         L3.associative = 12;
         L3.linesize    = 64;
         break;
@@ -1041,6 +1149,21 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo)
         L3.size        = 8192;
         L3.associative = 16;
         L3.linesize    = 64;
+        break;
+      case 0xea:
+	L3.size        = 12288;
+	L3.associative = 24;
+	L3.linesize    = 64;
+	break;
+      case 0xeb:
+	L3.size        = 18432;
+	L3.associative = 24;
+	L3.linesize    = 64;
+	break;
+      case 0xec:
+	L3.size        = 24576;
+	L3.associative = 24;
+	L3.linesize    = 64;
         break;
       }
     }

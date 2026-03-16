@@ -414,6 +414,9 @@ static gotoblas_t *get_coretype(void) {
       	  }else
 	    return &gotoblas_NEOVERSEV1;
   case 0xd4f:
+  case 0xd83:
+  case 0xd85:
+  case 0xd87:
       if (!(getauxval(AT_HWCAP) & HWCAP_SVE)) {
         openblas_warning(FALLBACK_VERBOSE, NEOVERSEN1_FALLBACK);
         return &gotoblas_NEOVERSEN1;

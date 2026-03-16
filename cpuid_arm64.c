@@ -323,7 +323,7 @@ int detect(void)
 	return CPU_CORTEXX2;
       else if (strstr(cpu_part, "0xd4f")) //NVIDIA Grace et al.
         return CPU_NEOVERSEV2;
-	  else if (strstr(cpu_part, "0xd87") || strstr(cpu_part, "0xd85")) // X925/A725
+	  else if (strstr(cpu_part, "0xd87") || strstr(cpu_part, "0xd85") || strstr(cpu_part, "0xd83")) // X925/A725
 		return CPU_NEOVERSEV2;
       else if (strstr(cpu_part, "0xd0b")) 
        return CPU_CORTEXA76;
