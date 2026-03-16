@@ -40,7 +40,11 @@ typedef uint16_t bfloat16;
 #endif
 
 #if defined(__GNUC__) && (__GNUC__ > 12)
+#if defined(OPENBLAS_ARCH_POWER)
+typedef bfloat16 hfloat16;
+#else
 typedef _Float16 hfloat16;
+#endif
 #else
 #include <stdint.h>
 typedef uint16_t hfloat16;

@@ -12,7 +12,7 @@ endif
 ifeq "$(or $(BUILD_SINGLE),$(BUILD_COMPLEX))" ""
 SBLASOBJS=
 endif
-ifneq ($(BUILD_DOUBLE),1)
+ifeq "$(or $(BUILD_DOUBLE),$(BUILD_COMPLEX16))" ""
 DBLASOBJS=
 endif
 
