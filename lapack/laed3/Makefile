@@ -9,7 +9,7 @@ SBLASOBJS += slaed3_parallel.$(SUFFIX)
 DBLASOBJS += dlaed3_parallel.$(SUFFIX)
 endif
 
-ifeq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
+ifeq "$(or $(BUILD_SINGLE),$(BUILD_COMPLEX))" ""
 SBLASOBJS=
 endif
 ifneq ($(BUILD_DOUBLE),1)
