@@ -386,8 +386,10 @@ typedef int blasint;
 #endif
 #endif
 
-#ifdef __EMSCRIPTEN__
+#if defined(ARCH_WASM)
+#ifndef YIELDING
 #define YIELDING
+#endif
 #endif
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -496,6 +498,10 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 
 #ifdef ARCH_CSKY
 #include "common_csky.h"
+#endif
+
+#ifdef ARCH_WASM
+#include "common_wasm.h"
 #endif
 
 #ifndef ASSEMBLER

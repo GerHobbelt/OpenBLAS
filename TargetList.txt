@@ -153,3 +153,7 @@ EV6
 14.CSKY
 CSKY
 CK860FV
+
+15. WebAssembly/Emscripten:
+WASM128_GENERIC
+

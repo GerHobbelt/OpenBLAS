@@ -279,10 +279,10 @@ int /* Main program */ main(void)
     real r__1;
 
     /* Local variables */
-    integer nalf, idim[9];
-    logical same;
-    integer nbet, ntra;
-    logical rewi;
+    static integer nalf, idim[9];
+    static logical same;
+    static integer nbet, ntra;
+    static logical rewi;
     extern /* Subroutine */ int cchk1_(char *, real *, real *, integer *, 
 	    integer *, logical *, logical *, logical *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
@@ -306,35 +306,35 @@ int /* Main program */ main(void)
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    complex *, complex *, complex *, complex *, complex *, complex *, 
 	    complex *, complex *, real *, complex *, integer *);
-    complex c__[4225]	/* was [65][65] */;
-    real g[65];
-    integer i__, j, n;
-    logical fatal;
-    complex w[130];
+    static complex c__[4225]	/* was [65][65] */;
+    static real g[65];
+    static integer i__, j, n;
+    static logical fatal;
+    static complex w[130];
     extern /* Subroutine */ int cmmch_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *, complex *, real *, complex *, 
 	    integer *, real *, real *, logical *, integer *, logical *);
     extern real sdiff_(real *, real *);
-    logical trace;
-    integer nidim;
-    char snaps[32];
-    integer isnum;
-    logical ltest[9];
-    complex aa[4225], ab[8450]	/* was [65][130] */, bb[4225], cc[4225], as[
+    static logical trace;
+    static integer nidim;
+    static char snaps[32];
+    static integer isnum;
+    static logical ltest[9];
+    static complex aa[4225], ab[8450]	/* was [65][130] */, bb[4225], cc[4225], as[
 	    4225], bs[4225], cs[4225], ct[65];
-    logical sfatal, corder;
-    char snamet[12], transa[1], transb[1];
-    real thresh;
-    logical rorder;
+    static logical sfatal, corder;
+    static char snamet[12], transa[1], transb[1];
+    static real thresh;
+    static logical rorder;
     extern /* Subroutine */ void cc3chke_(char *);
-    integer layout;
-    logical ltestt, tsterr;
-    complex alf[7];
+    static integer layout;
+    static logical ltestt, tsterr;
+    static complex alf[7];
     extern logical lce_(complex *, complex *, integer *);
-    complex bet[7];
-    real eps, err;
-    char tmpchar;
+    static complex bet[7];
+    static real eps, err;
+    static char tmpchar;
 
 /*  Test program for the COMPLEX          Level 3 Blas. */
 

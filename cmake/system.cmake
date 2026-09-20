@@ -879,6 +879,10 @@ if (DEFINED ARCH)
     set(USE_GEMM3M 1)
   endif ()
 
+  if (EMSCRIPTEN)
+    set(USE_GEMM3M 0)
+  endif ()
+
   if (${CORE} STREQUAL "generic")
     set(USE_GEMM3M 0)
   endif ()

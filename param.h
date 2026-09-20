@@ -3027,7 +3027,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P  16
 #endif
 
-#ifdef RISCV64_GENERIC
+#if defined(RISCV64_GENERIC) || defined(WASM128_GENERIC)
 #define GEMM_DEFAULT_OFFSET_A 0
 #define GEMM_DEFAULT_OFFSET_B 0
 #define GEMM_DEFAULT_ALIGN (BLASLONG)0x03fffUL
@@ -3661,8 +3661,6 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_R 4096
 
 #elif defined(NEOVERSEN2) || defined(NEOVERSEV2)
-
-#define GEMM_DIVIDE_LIMIT       3
 
 #if defined(XDOUBLE) || defined(DOUBLE)
 #define SWITCH_RATIO            8

@@ -97,6 +97,7 @@ case "$data" in
     *ARCH_RISCV64*) architecture=riscv64 ;;
     *ARCH_LOONGARCH64*) architecture=loongarch64 ;;
     *ARCH_CSKY*) architecture=csky ;;
+    *ARCH_WASM*) architecture=wasm ;;
 esac
 
 defined=0
@@ -130,7 +131,7 @@ case "$architecture" in
     	defined=1
     	;;
     arm|arm64) defined=1 ;;
-    zarch|e2k|alpha|ia64|riscv64|loonarch64)
+    zarch|e2k|alpha|ia64|riscv64|loonarch64|wasm)
     	defined=1
     	BINARY=64
     	;;
@@ -254,6 +255,7 @@ case "$data" in
     *ARCH_ZARCH*) architecture=zarch ;;
     *ARCH_LOONGARCH64*) architecture=loongarch64 ;;
     *ARCH_CSKY*) architecture=csky ;;
+    *ARCH_WASM*) architecture=wasm ;;
 esac
 
 binformat='bin32'

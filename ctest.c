@@ -178,7 +178,7 @@ ARCH_CSKY
 #endif
 
 #if defined(__EMSCRIPTEN__)
-ARCH_RISCV64
+ARCH_WASM
 OS_WINDOWS
 #endif
 

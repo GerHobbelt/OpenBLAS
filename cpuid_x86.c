@@ -1588,6 +1588,8 @@ int get_cpuname(void)
           if (support_avx2()) return CPUTYPE_HASWELL;
           if (support_avx()) return CPUTYPE_SANDYBRIDGE;
           else return CPUTYPE_NEHALEM;
+	case 12: // Jasper Lake Celeron N5105
+	  return CPUTYPE_NEHALEM;
         case 13: // Ice Lake NNPI
           if (support_avx512()) return CPUTYPE_SKYLAKEX;
           if (support_avx2()) return CPUTYPE_HASWELL;
@@ -2302,6 +2304,8 @@ int get_coretype(void)
           if (support_avx()) return CORE_SANDYBRIDGE;
           else return CORE_NEHALEM;
         }
+	if (model == 12) // Jasper Lake
+	  return CORE_NEHALEM;
         if (model == 13) { // Ice Lake NNPI
           if (support_avx512()) return CORE_SKYLAKEX;
           if (support_avx2()) return CORE_HASWELL;
@@ -2400,6 +2404,7 @@ int get_coretype(void)
       if (support_avx512()) return CORE_SKYLAKEX;
       if (support_avx2()) return CORE_HASWELL;
       if (support_avx()) return CORE_SANDYBRIDGE;
+      return CORE_NEHALEM;
     }
   }
 
