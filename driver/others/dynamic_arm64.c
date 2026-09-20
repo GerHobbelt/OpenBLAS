@@ -1,6 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
-/* Copyright 2023-2024 The OpenBLAS Project                          */
+/* Copyright 2023-2024, 2026 The OpenBLAS Project                    */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -425,10 +425,11 @@ static gotoblas_t *get_coretype(void) {
 	    return &gotoblas_NEOVERSEN1;
       	  }else
 	    return &gotoblas_NEOVERSEV1;
-  case 0xd4f:
-  case 0xd83:
-  case 0xd85:
-  case 0xd87:
+  case 0xd4f: // Neoverse V2
+  case 0xd83: // Neoverse V3AE
+  case 0xd84: // Neoverse V3
+  case 0xd85: // Cortex X925
+  case 0xd87: // Cortex A725
       if (!(getauxval(AT_HWCAP) & HWCAP_SVE)) {
         openblas_warning(FALLBACK_VERBOSE, NEOVERSEN1_FALLBACK);
         return &gotoblas_NEOVERSEN1;

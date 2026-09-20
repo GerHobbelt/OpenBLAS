@@ -113,6 +113,7 @@ if (${CMAKE_C_COMPILER_ID} STREQUAL "PGI")
 endif ()
 
 if (${CMAKE_C_COMPILER_ID} STREQUAL "NVHPC")
+  set (GCC_VERSION 100)
   if (POWER)
     set(CCOMMON_OPT "${CCOMMON_OPT} -tp pwr8")
   elseif (X86_64)

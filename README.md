@@ -176,7 +176,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **Cortex-A53**: same as ARMV8 (different cpu specifications)
 - **Cortex-A55**: same as ARMV8 (different cpu specifications)
 - **Cortex A57**: Optimized Level-3 and Level-2 functions
-- **Cortex A72**: same as A57 ( different cpu specifications)
+- **Cortex A72**: same as A57 (different cpu specifications)
 - **Cortex A73**: same as A57 (different cpu specifications)
 - **Cortex A76**: same as A57 (different cpu specifications)
 - **Falkor**: same as A57 (different cpu specifications)
@@ -189,6 +189,8 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **Neoverse V1**: (AWS Graviton3) optimized Level-3 BLAS
 - **Neoverse N2**: preliminary support
 - **Neoverse V2**: preliminary support
+- **Neoverse V3**: preliminary support
+- **Neoverse V3AE**: preliminary support
 - **Apple Vortex**: preliminary support based on ThunderX2/3
 - **Apple VortexM4**: preliminary support based on ThunderX2/3, SME kernels for SGEMM,SSYMM,STRMM,SSYRK,SSYR2K
 - **A64FX**:  preliminary support, optimized Level-3 BLAS

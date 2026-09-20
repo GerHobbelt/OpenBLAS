@@ -100,17 +100,37 @@ DTRMMKERNEL	= ../generic/trmmkernel_2x2.c
 CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
 ZTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
 
+ifndef SGEMMKERNEL
 SGEMMKERNEL    =  ../generic/gemmkernel_2x2.c
+endif
+ifndef SGEMMONCOPY
 SGEMMONCOPY    =  ../generic/gemm_ncopy_2.c
+endif
+ifndef SGEMMOTCOPY
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
+endif
+ifndef SGEMMONCOPYOBJ
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
+endif
+ifndef SGEMMOTCOPYOBJ
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
+endif
 
+ifndef DGEMMKERNEL
 DGEMMKERNEL    =  ../generic/gemmkernel_2x2.c
+endif
+ifndef DGEMMONCOPY
 DGEMMONCOPY    = ../generic/gemm_ncopy_2.c
+endif
+ifndef DGEMMOTCOPY
 DGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
+endif
+ifndef DGEMMONCOPYOBJ
 DGEMMONCOPYOBJ = dgemm_oncopy$(TSUFFIX).$(SUFFIX)
+endif
+ifndef DGEMMOTCOPYOBJ
 DGEMMOTCOPYOBJ = dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+endif
 
 CGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
 CGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
@@ -124,15 +144,31 @@ ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
+ifndef STRSMKERNEL_LN
 STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
+endif
+ifndef STRSMKERNEL_LT
 STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
+endif
+ifndef STRSMKERNEL_RN
 STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
+endif
+ifndef STRSMKERNEL_RT
 STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
+endif
 
+ifndef DTRSMKERNEL_LN
 DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
+endif
+ifndef DTRSMKERNEL_LT
 DTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
+endif
+ifndef DTRSMKERNEL_RN
 DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
+endif
+ifndef DTRSMKERNEL_RT
 DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+endif
 
 CTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
 CTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c

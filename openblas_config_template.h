@@ -48,7 +48,9 @@ typedef bfloat16 hfloat16;
 #ifdef FLT16_MAX
 typedef _Float16 hfloat16;
 #else
+#include <stdint.h>
 typedef uint16_t hfloat16;
+#endif
 #endif
 #else
 #include <stdint.h>

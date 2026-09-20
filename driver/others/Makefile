@@ -127,10 +127,10 @@ endif
 xerbla.$(SUFFIX) : xerbla.c
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
-dynamic.$(SUFFIX) : dynamic.c
+dynamic%$(SUFFIX) : dynamic%c
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
-dynamic.$(PSUFFIX) : dynamic.c
+dynamic%$(PSUFFIX) : dynamic%c
 	$(CC) $(PFLAGS) -c $< -o $(@F)
 
 parameter.$(SUFFIX) : parameter.c ../../param.h

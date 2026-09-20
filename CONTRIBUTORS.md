@@ -275,3 +275,6 @@ In chronological order:
 
 * Fadi Arafeh <fadi.arafeh@arm.com>
   * [2026-03-05] Accelerate SVE128 SBGEMM/BGEMM
+
+* Nathan Sircombe <nathan.sircombe@arm.com>
+  * [2026-04-16] Add CPU ID for Neoverse V3

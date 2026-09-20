@@ -48,6 +48,7 @@
 #endif
 
 #ifdef DYNAMIC_ARCH
+#undef GEMM_PREFERRED_SIZE
 #define GEMM_PREFERRED_SIZE gotoblas->preferred_size
 #endif
 #ifndef GEMM_PREFERRED_SIZE
