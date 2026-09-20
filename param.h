@@ -3062,7 +3062,42 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P  16
 #endif
 
-#if defined(RISCV64_GENERIC) || defined(WASM128_GENERIC)
+#if defined(WASM128_GENERIC)
+#define GEMM_DEFAULT_OFFSET_A 0
+#define GEMM_DEFAULT_OFFSET_B 0
+#define GEMM_DEFAULT_ALIGN (BLASLONG)0x03fffUL
+
+#define SGEMM_DEFAULT_UNROLL_M  4
+#define SGEMM_DEFAULT_UNROLL_N  4
+
+#define DGEMM_DEFAULT_UNROLL_M  4
+#define DGEMM_DEFAULT_UNROLL_N  4
+
+#define CGEMM_DEFAULT_UNROLL_M  2
+#define CGEMM_DEFAULT_UNROLL_N  2
+
+#define ZGEMM_DEFAULT_UNROLL_M  2
+#define ZGEMM_DEFAULT_UNROLL_N  2
+
+#define SGEMM_DEFAULT_P	128
+#define DGEMM_DEFAULT_P	128
+#define CGEMM_DEFAULT_P 96
+#define ZGEMM_DEFAULT_P 64
+
+#define SGEMM_DEFAULT_Q 240
+#define DGEMM_DEFAULT_Q 120
+#define CGEMM_DEFAULT_Q 120
+#define ZGEMM_DEFAULT_Q 120
+
+#define SGEMM_DEFAULT_R 12288
+#define DGEMM_DEFAULT_R 8192
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
+
+#define SYMV_P	16
+#endif
+
+#if defined(RISCV64_GENERIC)
 #define GEMM_DEFAULT_OFFSET_A 0
 #define GEMM_DEFAULT_OFFSET_B 0
 #define GEMM_DEFAULT_ALIGN (BLASLONG)0x03fffUL
@@ -3485,6 +3520,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define DGEMM_DEFAULT_UNROLL_M  6
 #define DGEMM_DEFAULT_UNROLL_N  8
+/* SYRK/SYR2K diagonal kernels step packed A/B by GEMM_UNROLL_MN and assume
+ * that lands on both MR and NR panel boundaries (pointer a+loop*k). So MN
+ * must be a common multiple of UNROLL_M and UNROLL_N: LCM(6,8)=24.
+ * MN=6 matched MR but broke NR=8 B packs; MN=8 matched NR but stepped into
+ * the middle of MR=6 A panels (first 6 rows OK, rest wrong). See #5997. */
+#define DGEMM_DEFAULT_UNROLL_MN 24
 
 #define CGEMM_DEFAULT_UNROLL_M  8
 #define CGEMM_DEFAULT_UNROLL_N  4
