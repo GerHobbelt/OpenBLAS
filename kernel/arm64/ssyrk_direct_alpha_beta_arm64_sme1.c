@@ -79,11 +79,11 @@ kernel_2x2(const float *A, float *B, float *C, size_t shared_dim,
   for (size_t i = svl; i < block_rows; i++) {
     svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
     row_c_0 = svmul_x(pg, beta_vec, row_c_0);
-    svwrite_hor_za32_f32_m(/*tile*/2, /*slice*/i, pg_c_0, row_c_0);
+    svwrite_hor_za32_f32_m(/*tile*/2, /*slice*/i - svl, pg_c_0, row_c_0);
 
     svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
     row_c_1 = svmul_x(pg, beta_vec, row_c_1);
-    svwrite_hor_za32_f32_m(/*tile*/3, /*slice*/i, pg_c_1, row_c_1);
+    svwrite_hor_za32_f32_m(/*tile*/3, /*slice*/i - svl, pg_c_1, row_c_1);
   }
   
   svfloat32_t alpha_vec = svdup_f32(alpha);
@@ -143,8 +143,8 @@ kernel_2x2(const float *A, float *B, float *C, size_t shared_dim,
         pg_c_0 = svnot_b_z(pg_c_0_full, svwhilelt_b32_u64(0, last_invalid_index));
         pg_c_1 = svnot_b_z(pg_c_1_full, svwhilelt_b32_u64(svl, last_invalid_index));
       }
-      svst1_hor_za32(/*tile*/2, /*slice*/i, pg_c_0, &C[i * ldc]);
-      svst1_hor_za32(/*tile*/3, /*slice*/i, pg_c_1, &C[i * ldc + svl]);
+      svst1_hor_za32(/*tile*/2, /*slice*/i - svl, pg_c_0, &C[i * ldc]);
+      svst1_hor_za32(/*tile*/3, /*slice*/i - svl, pg_c_1, &C[i * ldc + svl]);
   }
 #else
   // Store to C from ZA
@@ -158,8 +158,8 @@ kernel_2x2(const float *A, float *B, float *C, size_t shared_dim,
   for (size_t i = svl; i < block_rows; i++, valid_index++) {
     pg_c_0 = svwhilelt_b32_u64(0, MIN(valid_index, block_cols));
     pg_c_1 = svwhilelt_b32_u64(svl, MIN(valid_index, block_cols));
-    svst1_hor_za32(/*tile*/2, /*slice*/i, pg_c_0, &C[i * ldc]);
-    svst1_hor_za32(/*tile*/3, /*slice*/i, pg_c_1, &C[i * ldc + svl]);
+    svst1_hor_za32(/*tile*/2, /*slice*/i - svl, pg_c_0, &C[i * ldc]);
+    svst1_hor_za32(/*tile*/3, /*slice*/i - svl, pg_c_1, &C[i * ldc + svl]);
   }  
 #endif 
 }

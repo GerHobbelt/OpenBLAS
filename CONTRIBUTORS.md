@@ -278,3 +278,4 @@ In chronological order:
 
 * Nathan Sircombe <nathan.sircombe@arm.com>
   * [2026-04-16] Add CPU ID for Neoverse V3
+hheei <hheei@users.noreply.github.com>

@@ -1648,7 +1648,11 @@ ifneq ($(C_COMPILER), SUN)
 CCOMMON_OPT     += -UASMNAME -UASMFNAME -UNAME -UCNAME -UCHAR_NAME -UCHAR_CNAME
 endif
 endif
+ifeq ( ,$(findstring pizfix,$(CEXTRALIB)))
 CCOMMON_OPT	+= -DASMNAME=$(FU)$(*F) -DASMFNAME=$(FU)$(*F)$(BU) -DNAME=$(*F)$(BU) -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)$(BU)\" -DCHAR_CNAME=\"$(*F)\"
+else
+CCOMMON_OPT	+= -DASMNAME=$(FU)pizlonated_$(*F) -DASMFNAME=$(FU)pizlonated_$(*F)$(BU) -DNAME=$(*F)$(BU) -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)$(BU)\" -DCHAR_CNAME=\"$(*F)\"
+endif
 
 ifeq ($(CORE), PPC440)
 CCOMMON_OPT	+= -DALLOC_QALLOC
