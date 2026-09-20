@@ -342,8 +342,8 @@ no_sme=0
 is_appleclang=0
 if [ "$architecture" = "arm64" ]; then
     if [ "$compiler" = "CLANG" ]; then
-        data=`$compiler_name --version`
-	case "$data" in Apple*)
+        vdata=`$compiler_name --version`
+	case "$vdata" in Apple*)
 	is_appleclang=1
 	esac
     fi

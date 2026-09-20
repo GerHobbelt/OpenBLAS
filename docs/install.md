@@ -796,6 +796,55 @@ make BINARY=32 BINARY32=1 CC=$MTI_TOOLCHAIN-gcc AR=$MTI_TOOLCHAIN-ar FC="$MTI_TO
 ```
 
 
+### RISC-V
+
+OpenBLAS supports several RISC-V targets. Target selection determines whether
+the resulting build is vectorized.
+
+#### Target selection
+
+| Target              | Vectorization                  | Use when                                                |
+| ------------------- | ------------------------------ | ------------------------------------------------------- |
+| `RISCV64_GENERIC`   | None — scalar reference path   | Non-vector cores, or as a baseline reference build      |
+| `RISCV64_ZVL128B`   | RVV 1.0, VLEN >= 128 bits      | Generic RVV-1.0 hardware with 128-bit vector registers  |
+| `RISCV64_ZVL256B`   | RVV 1.0, VLEN >= 256 bits      | Generic RVV-1.0 hardware with 256-bit vector registers  |
+| `C910V`             | RVV 0.7.1 (legacy)             | T-Head C910 (Allwinner D1, etc.)                        |
+| `x280`              | RVV 1.0, SiFive-tuned          | SiFive x280 cores                                       |
+
+As with the `GENERIC` and `ARCH_GENERIC` targets on other architectures,
+`RISCV64_GENERIC` maps all BLAS operations to the non-vectorized plain-C
+reference path. On RISC-V specifically, `Makefile.riscv64` also appends a
+scalar `-march` override for this target that takes precedence over any
+user-supplied `-march=rv64gcv` flag, so passing the V extension on the
+command line will not produce a vectorized build under this target.
+
+For RVV 1.0 vectorized builds, use `RISCV64_ZVL128B` or `RISCV64_ZVL256B`.
+These targets route all three BLAS levels including DGEMM to the
+`_rvv.c` kernel set introduced in 2022; see
+[issue #3808](https://github.com/OpenMathLib/OpenBLAS/issues/3808) for the
+design rationale and the `_vector.c` (legacy RVV 0.7) / `_rvv.c` (RVV 1.0)
+codebase separation.
+
+#### Compiler requirements for ZVL targets
+
+GCC 14 or later is required on current OpenBLAS releases when building the
+`RISCV64_ZVL128B` or `RISCV64_ZVL256B` targets. GCC 13 does not implement
+the segmented load/store intrinsics (`__riscv_vsseg*`) used by the
+`_rvv.c` kernels; under GCC 13 the build still completes and produces a
+library, but the affected routines fall back to scalar code paths.
+Functional tests will pass on the resulting library; only
+disassembly-level verification detects the regression.
+
+For a correct `RISCV64_ZVL128B` build on OpenBLAS 0.3.33,
+
+```bash
+riscv64-linux-gnu-objdump -d libopenblas*.a | \
+    grep -c 'vle64\|vfmacc\|vsetvli\|vlse64\|vfmul\|vfadd\|vfredosum'
+```
+
+returns approximately 12,000-14,000 (GCC 14: ~12,691; GCC 15: ~14,355).
+
+
 ### FreeBSD
 
 You will need to install the following tools from the FreeBSD ports tree:

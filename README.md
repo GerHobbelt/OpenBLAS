@@ -226,6 +226,8 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
   make HOSTCC=gcc TARGET=x280 NUM_THREADS=8 CC=riscv64-unknown-linux-gnu-clang FC=riscv64-unknown-linux-gnu-gfortran
   ```
 
+(For RVV 1.0 target selection and compiler requirements, see the [RISC-V section in docs/install.md](docs/install.md#risc-v).)
+
 - **ZVL???B**: Level-3 BLAS and Level-1,2 including vectorised kernels targeting generic RISCV cores with vector support with registers of at least the corresponding width; ZVL128B and ZVL256B are available.
 e.g.:
   ```sh

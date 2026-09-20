@@ -311,7 +311,7 @@
 *     .. External Subroutines ..
       EXTERNAL           SCOPY, SGEHRD, SGEMM, SLACPY,
      $                   SLAHQR,
-     $                   SLANV2, SLARF1L, SLARFG, SLASET, SORMHR,
+     $                   SLANV2, SLARF1F, SLARFG, SLASET, SORMHR,
      $                   STREXC
 *     ..
 *     .. Intrinsic Functions ..

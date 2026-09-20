@@ -790,6 +790,17 @@ int get_L3_size() {
   return ((ret & 0xffff) + 1) * pow(2, ((ret >> 16) & 0xff)) * pow(2, ((ret >> 24) & 0x7f)) / 1024 / 1024; // MB
 }
 
+int get_cpu_prid() {
+  int ret = 0, id = 0x0;
+  __asm__ volatile (
+    "cpucfg %[ret], %[id]"
+    : [ret]"=r"(ret)
+    : [id]"r"(id)
+    : "memory"
+  );
+  return ret;
+}
+
 void blas_set_parameter(void){
 #if defined(LA464)
   int L3_size = get_L3_size();
@@ -868,6 +879,18 @@ void blas_set_parameter(void){
     }
   }
 #endif
+#elif defined(LA264)
+  int prid = get_cpu_prid();
+  if (prid == 0x0014b020) { //2k3000
+
+        zgemm_p = 128;
+        zgemm_q = 176;
+        zgemm_r = 360;
+  } else {
+        zgemm_p = 64;
+        zgemm_q = 120;
+        zgemm_r = 4096;
+  }
 #endif
 }
 #endif

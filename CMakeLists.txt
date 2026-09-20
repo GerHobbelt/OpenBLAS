@@ -58,9 +58,10 @@ else()
   set(NO_AFFINITY 1)
 endif()
 
-option(CPP_THREAD_SAFETY_TEST "Run a massively parallel DGEMM test to confirm thread safety of the library (requires OpenMP and about 1.3GB of RAM)" OFF)
+option(CPP_THREAD_SAFETY_TEST "Run massively parallel DGEMM tests to confirm thread safety of the library (requires about 1.3GB of RAM)" OFF)
+option(CPP_THREAD_SAFETY_USE_OPENMP "Use OpenMP to launch the C++ thread safety tests" ON)
 
-option(CPP_THREAD_SAFETY_GEMV "Run a massively parallel DGEMV test to confirm thread safety of the library (requires OpenMP)" OFF)
+option(CPP_THREAD_SAFETY_GEMV "Run a massively parallel DGEMV test to confirm thread safety of the library" OFF)
 option(BUILD_STATIC_LIBS "Build static library" OFF)
 option(BUILD_SHARED_LIBS "Build shared library" OFF)
 if(NOT BUILD_STATIC_LIBS AND NOT BUILD_SHARED_LIBS)
@@ -263,6 +264,14 @@ if(APPLE)
   if(NOT NOFORTRAN)
     set(CMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS ON)
     set(CMAKE_Fortran_USE_RESPONSE_FILE_FOR_LIBRARIES ON)
+    # NAG Fortran does not support the GCC-specific -x f95-cpp-input flag
+    # used in the shared library link rule below.  Override
+    # CMAKE_Fortran_CREATE_SHARED_LIBRARY early (before targets are defined)
+    # to use the C compiler link rule instead; the shared library contains
+    # only C and assembler objects so this is safe.
+    if(CMAKE_Fortran_COMPILER_ID MATCHES "NAG")
+      set(CMAKE_Fortran_CREATE_SHARED_LIBRARY ${CMAKE_C_CREATE_SHARED_LIBRARY})
+    endif()
   endif()
   set(CMAKE_NINJA_FORCE_RESPONSE_FILE ON)
 endif()
@@ -360,9 +369,32 @@ if(APPLE AND BUILD_STATIC_LIBS)
   if(NOT NOFORTRAN)
     set(CMAKE_Fortran_CREATE_STATIC_LIBRARY ${CREATE_STATIC_LIBRARY_COMMAND})
     if(BUILD_SHARED_LIBS)
-      set(CMAKE_Fortran_CREATE_SHARED_LIBRARY
-	"sh -c 'echo \"\" | ${CMAKE_Fortran_COMPILER} -o dummy.o -c -x f95-cpp-input - '"
-	"sh -c '${CMAKE_Fortran_COMPILER} -fpic -shared -Wl,-all_load -Wl,-force_load,${STATIC_PATH} dummy.o -o ${SHARED_PATH} ${OMP_LIB}'")
+      if(CMAKE_Fortran_COMPILER_ID MATCHES "GNU")
+        set(CMAKE_Fortran_CREATE_SHARED_LIBRARY
+          "sh -c 'echo \"\" | ${CMAKE_Fortran_COMPILER} -o dummy.o -c -x f95-cpp-input - '"
+          "sh -c '${CMAKE_Fortran_COMPILER} -fpic -shared -Wl,-all_load -Wl,-force_load,${STATIC_PATH} dummy.o -o ${SHARED_PATH} ${OMP_LIB}'")
+      elseif(CMAKE_Fortran_COMPILER_ID MATCHES "NAG")
+        # NAG does not support -x f95-cpp-input, and macOS needs -dynamiclib
+        # rather than -Wl,-shared.  Use the C compiler as the linker driver
+        # and add the NAG Fortran runtime so NAGf90_* symbols resolve.
+        # Locate the NAG Fortran runtime (libf<XY>rts) without hardcoding the
+        # version digits: NAG 7.1 ships libf71rts, 7.2 ships libf72rts, etc.
+        get_filename_component(_NAG_FC_DIR "${CMAKE_Fortran_COMPILER}" DIRECTORY)
+        set(_NAG_RTS_DIR "${_NAG_FC_DIR}/../lib/NAG_Fortran")
+        file(GLOB _NAG_RTS_CANDIDATES
+             "${_NAG_RTS_DIR}/libf*rts.dylib"
+             "${_NAG_RTS_DIR}/libf*rts.a")
+        if(_NAG_RTS_CANDIDATES)
+          list(GET _NAG_RTS_CANDIDATES 0 _NAG_RTS_LIB)
+          get_filename_component(_NAG_RTS_NAME "${_NAG_RTS_LIB}" NAME_WE)
+          string(REGEX REPLACE "^lib" "" _NAG_RTS_LIBNAME "${_NAG_RTS_NAME}")
+          set(_NAG_RTS_FLAGS "-L${_NAG_RTS_DIR} -l${_NAG_RTS_LIBNAME}")
+        else()
+          set(_NAG_RTS_FLAGS "")
+        endif()
+        set(CMAKE_Fortran_CREATE_SHARED_LIBRARY
+          "sh -c '${CMAKE_C_COMPILER} -dynamiclib -Wl,-all_load -Wl,-force_load,${STATIC_PATH} -o ${SHARED_PATH} ${OMP_LIB} ${_NAG_RTS_FLAGS}'")
+      endif()
     endif()
   else()
     set(CMAKE_C_CREATE_STATIC_LIBRARY ${CREATE_STATIC_LIBRARY_COMMAND})
@@ -789,4 +821,3 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
 install(EXPORT "${PN}${SUFFIX64}Targets"
         NAMESPACE "${PN}${SUFFIX64}::"
         DESTINATION ${CMAKECONFIG_INSTALL_DIR})
-
