@@ -47,10 +47,7 @@ BLAS-like and conversion functions for `hfloat16` (available when OpenBLAS was c
 * `int openblas_set_affinity(int thread_index, size_t cpusetsize, cpu_set_t *cpuset)` sets the CPU affinity mask of the given thread
   to the provided cpuset. Only available on Linux, with semantics identical to `pthread_setaffinity_np`.
 * `openblas_set_thread_callback_function` overrides the default multithreading backend with the provided argument
-* `openblas_set_xerbla(openblas_xerbla_handler handler)` installs a process-wide XERBLA error handler and returns the
-  previous handler. Passing `NULL` restores the default handler. Handlers must be thread-safe because they may be called
-  concurrently. Replacing a handler is thread-safe but does not wait for in-progress calls to return, so the previous handler's
-  code must remain loaded until those calls finish. The `name` and `info` pointers are valid only during the callback. `name`
-  points to `name_length` valid bytes and need not be NUL-terminated; the length stops before the first NUL but otherwise includes
-  trailing spaces. Handler registration works normally on ELF platforms. For backward compatibility, an application-provided
-  strong `xerbla` symbol still overrides the OpenBLAS dispatcher and bypasses the registered handler.
+* `openblas_set_xerbla(openblas_xerbla_handler handler)` replaces the XERBLA handler for the current OpenBLAS
+  instance and returns the previous handler; passing `NULL` restores the default. Callbacks may be invoked concurrently
+  and therefore must be thread-safe. `name` is valid for `name_length` bytes during the callback and need not be
+  NUL-terminated. On ELF platforms, an application-provided strong `xerbla` symbol bypasses the registered handler.

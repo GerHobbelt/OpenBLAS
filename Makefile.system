@@ -18,6 +18,10 @@ HOSTARCH := $(shell uname -m)
 ifeq ($(HOSTARCH), amd64)
 HOSTARCH=x86_64
 endif
+ifeq ($(HOSTARCH), i386)
+HOSTARCH=x86
+override BINARY=32
+endif
 
 # Catch conflicting usage of ARCH in some BSD environments
 ifeq ($(ARCH), amd64)
