@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2024, The OpenBLAS Project
+Copyright (c) 2026, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -33,20 +33,20 @@ int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alph
 
 #ifdef LA464
   if (transa) {
-    if (MNK <= 24.0 * 24.0 * 24.0)
+    if (MNK <= 14.0 * 14.0 * 14.0)
       return 1;
   } else {
-    if (MNK <= 64.0 * 64.0 * 64.0)
+    if (MNK <= 80.0 * 80.0 * 80.0)
       return 1;
   }
 #endif
 
 #ifdef LA264
   if (transa) {
-    if (MNK <= 24.0 * 24.0 * 24.0)
+    if (MNK <= 80.0 * 80.0 * 80.0)
       return 1;
   } else {
-    if (MNK <= 80.0 * 80.0 * 80.0)
+    if (MNK <= 100.0 * 100.0 * 100.0)
       return 1;
   }
 #endif

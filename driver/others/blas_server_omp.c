@@ -118,17 +118,19 @@ void goto_set_num_threads(int num_threads) {
 #endif
 
 }
+OPENBLAS_EXPORT
 void openblas_set_num_threads(int num_threads) {
 	blas_is_num_threads_set_explicitly = 1;
 	goto_set_num_threads(num_threads);
 }
 
 #ifdef OS_LINUX
-
+OPENBLAS_EXPORT
 int openblas_setaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set) {
   fprintf(stderr,"OpenBLAS: use OpenMP environment variables for setting cpu affinity\n");
   return -1;
 }
+OPENBLAS_EXPORT
 int openblas_getaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set) {
   fprintf(stderr,"OpenBLAS: use OpenMP environment variables for querying cpu affinity\n");
   return -1;
@@ -327,7 +329,6 @@ static void exec_threads(int thread_num, blas_queue_t *queue, int buf_index){
 
     if (sa == NULL) {
       sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
-      queue->sa=sa;
     }
 
     if (sb == NULL) {
@@ -376,9 +377,10 @@ fprintf(stderr,"UNHANDLED COMPLEX\n");
           /* Other types in future */
 	  }
       }
-      queue->sb=sb;
     }
   }
+
+  queue->worker_sb = sb;
 
   if (queue -> mode & BLAS_LEGACY) {
     legacy_exec(queue -> routine, queue -> mode, queue -> args, sb);

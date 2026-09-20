@@ -2675,6 +2675,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SBGEMM_DEFAULT_P 512
 #define SBGEMM_DEFAULT_Q 1024
 #define SBGEMM_DEFAULT_R 4096
+
+/* BGEMM (BF16->BF16) on POWER10: tile matches the 16x8 primary tile in
+ * sbgemm_kernel_power10.c.  A-panel packed by sbgemm_ncopy_16, B-panel by
+ * sbgemm_ncopy_8 (identical BF16 pair interleaving, reused for BGEMM). */
+#undef BGEMM_DEFAULT_UNROLL_M
+#undef BGEMM_DEFAULT_UNROLL_N
+#undef BGEMM_DEFAULT_P
+#undef BGEMM_DEFAULT_Q
+#undef BGEMM_DEFAULT_R
+#define BGEMM_DEFAULT_UNROLL_M 16
+#define BGEMM_DEFAULT_UNROLL_N 8
+#define BGEMM_DEFAULT_P 512
+#define BGEMM_DEFAULT_Q 1024
+#define BGEMM_DEFAULT_R 4096
 #endif
 
 #if defined(SPARC) && defined(V7)
