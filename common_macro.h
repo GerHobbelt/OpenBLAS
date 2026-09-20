@@ -2763,6 +2763,13 @@ typedef struct {
   void * routine;
   int routine_mode;
 
+  /* Generation slot of the thread that issued this operation and the
+     generation it runs as (see driver/others/openblas_cancel.c), or
+     NULL/0.  Consulted only by the level-3 thread drivers; must be set
+     explicitly wherever it is to be observed. */
+  size_t * cancel_slot;
+  size_t cancel_gen;
+
 } blas_arg_t;
 #endif
 

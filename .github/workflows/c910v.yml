@@ -58,8 +58,11 @@ jobs:
         run: |
           # Force use c910v qemu-user
           wget https://github.com/revyos/qemu/commit/222729c7455784dd855216d7a2bec4bd8f2a6800.patch
+          # Backport the upstream linux-user clone_lock fix
+          wget -O qemu-clone-lock.patch https://gitlab.com/qemu-project/qemu/-/commit/d22e9aec572396836782e993cb18d598e6012688.patch
           cd qemu
           patch -p1 < ../222729c7455784dd855216d7a2bec4bd8f2a6800.patch
+          patch -p1 < ../qemu-clone-lock.patch
           export CXXFLAGS="-Wno-error"; export CFLAGS="-Wno-error"
           ./configure --prefix=$GITHUB_WORKSPACE/qemu-install --target-list=riscv64-linux-user --disable-system
           make -j$(nproc)

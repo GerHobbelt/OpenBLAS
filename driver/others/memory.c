@@ -500,6 +500,7 @@ int blas_get_cpu_number(void){
 #endif
 
 
+OPENBLAS_EXPORT
 int openblas_get_num_procs(void) {
 #ifndef SMP
   return 1;
@@ -508,6 +509,7 @@ int openblas_get_num_procs(void) {
 #endif
 }
 
+OPENBLAS_EXPORT
 int openblas_get_num_threads(void) {
 #ifndef SMP
   return 1;
@@ -2075,6 +2077,7 @@ int blas_get_cpu_number(void){
 #endif
 
 
+OPENBLAS_EXPORT
 int openblas_get_num_procs(void) {
 #ifndef SMP
   return 1;
@@ -2083,6 +2086,7 @@ int openblas_get_num_procs(void) {
 #endif
 }
 
+OPENBLAS_EXPORT
 int openblas_get_num_threads(void) {
 #ifndef SMP
   return 1;

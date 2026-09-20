@@ -867,6 +867,7 @@ if (openblas_threads_callback_) {
   return 0;
 }
 
+OPENBLAS_EXPORT
 void goto_set_num_threads(int num_threads) {
 
   long i;
@@ -939,6 +940,7 @@ void goto_set_num_threads(int num_threads) {
 
 }
 
+OPENBLAS_EXPORT
 void openblas_set_num_threads(int num_threads) {
 	goto_set_num_threads(num_threads);
 

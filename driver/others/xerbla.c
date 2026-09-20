@@ -73,7 +73,7 @@ static void openblas_xerbla_default(const char *message, const blasint *info,
 static openblas_xerbla_handler openblas_xerbla = openblas_xerbla_default;
 static volatile BLASULONG openblas_xerbla_lock = 0;
 
-openblas_xerbla_handler
+OPENBLAS_EXPORT openblas_xerbla_handler
 openblas_set_xerbla(openblas_xerbla_handler handler) {
   openblas_xerbla_handler previous;
 

@@ -6,6 +6,7 @@
 #endif
 
 
+OPENBLAS_EXPORT
 #ifndef CBLAS
 void NAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
 

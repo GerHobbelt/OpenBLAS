@@ -733,7 +733,8 @@ if(NOT NO_CBLAS)
   message (STATUS "Generating cblas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
   set(CBLAS_H ${CMAKE_BINARY_DIR}/generated/cblas.h)
   file(READ ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h CBLAS_H_CONTENTS)
-  string(REPLACE "common" "openblas_config" CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS}")
+  string(REPLACE "common" "openblas_config" CBLAS_H_CONTENTS_NEW2 "${CBLAS_H_CONTENTS}")
+  string(REPLACE "OPENBLAS_EXPORT " "" CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW2}")
 
   # Symbol prefix/suffix settings rename exported functions, not C typedefs.
   # Protect callback type names from the textual function-name rewriting below.
