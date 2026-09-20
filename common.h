@@ -880,6 +880,26 @@ typedef struct {
 #endif
 
 #include "common_interface.h"
+
+/* Internal declaration of the public C XERBLA callback API. Keep this out of
+ * common_interface.h, whose contents are copied verbatim into f77blas.h and
+ * are not adjusted for SYMBOLPREFIX/SYMBOLSUFFIX by the CMake build. */
+#ifndef ASSEMBLER
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef OPENBLAS_XERBLA_HANDLER_DEFINED
+#define OPENBLAS_XERBLA_HANDLER_DEFINED
+typedef void (*openblas_xerbla_handler)(const char *name,
+                                        const blasint *info,
+                                        size_t name_length);
+#endif
+openblas_xerbla_handler openblas_set_xerbla(openblas_xerbla_handler handler);
+#ifdef __cplusplus
+}
+#endif
+#endif
+
 #ifdef SANITY_CHECK
 #include "common_reference.h"
 #endif
