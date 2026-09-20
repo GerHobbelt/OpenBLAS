@@ -54,6 +54,14 @@ if (DYNAMIC_ARCH)
       endif()
 	  endif()
     endif ()
+
+    if (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin" OR ${CMAKE_SYSTEM_NAME} STREQUAL "iOS")
+      set(DYNAMIC_CORE ARMV8 NEOVERSEN1)
+      if (${CMAKE_C_COMPILER_VERSION} VERSION_GREATER_EQUAL 19 OR (${CMAKE_C_COMPILER_ID} MATCHES AppleClang AND ${CMAKE_C_COMPILER_VERSION} VERSION_GREATER_EQUAL 17) ) # SME ACLE supported in LLVM >= 19 and AppleClang >= 17
+        set(DYNAMIC_CORE ${DYNAMIC_CORE} ARMV9SME VORTEXM4)
+      endif()
+    endif()
+    
     if (DYNAMIC_LIST)
 	  set(DYNAMIC_CORE ARMV8 ${DYNAMIC_LIST})
     endif ()

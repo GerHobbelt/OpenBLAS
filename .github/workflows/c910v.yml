@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: install build deps
         run: |
@@ -40,7 +40,7 @@ jobs:
           gcc-${{ matrix.apt_triple }} gfortran-${{ matrix.apt_triple }} libgomp1-riscv64-cross libglib2.0-dev
 
       - name: checkout qemu
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: XUANTIE-RV/qemu
           path: qemu
@@ -58,7 +58,7 @@ jobs:
           make install
 
       - name: Compilation cache
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/.ccache
           key: ccache-${{ runner.os }}-${{ matrix.target }}-${{ github.ref }}-${{ github.sha }}

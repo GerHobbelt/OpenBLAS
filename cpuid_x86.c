@@ -1843,9 +1843,11 @@ int get_cpuname(void)
         if (support_avx2()) return CPUTYPE_ZEN;
         else return CPUTYPE_DUNNINGTON;
       default:
+        if (support_avx2()) return CPUTYPE_ZEN;
         return CPUTYPE_NEHALEM;
       }
     default:
+      if (support_avx2()) return CPUTYPE_ZEN;
       return CPUTYPE_NEHALEM;
     }
   }

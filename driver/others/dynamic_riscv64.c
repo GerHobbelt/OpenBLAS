@@ -152,6 +152,7 @@ char* gotoblas_corename(void) {
 static gotoblas_t* get_coretype(void) {
 	uint64_t vector_mask;
 	unsigned vlenb = 0;
+	char coremsg[128];
 
 #if !defined(OS_LINUX)
 	return NULL;

@@ -951,9 +951,15 @@ static gotoblas_t *get_coretype(void){
           else
             return &gotoblas_DUNNINGTON;
         default:
+          if (support_avx2())
+            return &gotoblas_ZEN;
+          else
           return &gotoblas_NEHALEM;
         }
       default:
+          if (support_avx2())
+            return &gotoblas_ZEN;
+          else
         return &gotoblas_NEHALEM;
     }
   }

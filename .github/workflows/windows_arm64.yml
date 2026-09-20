@@ -21,7 +21,7 @@ jobs:
     runs-on: windows-11-arm
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Install LLVM for Win-ARM64
         shell: pwsh

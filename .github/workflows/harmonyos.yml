@@ -20,7 +20,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: ndk-install
       run: |
         wget https://repo.huaweicloud.com/harmonyos/os/4.1.1-Release/ohos-sdk-windows_linux-public.tar.gz

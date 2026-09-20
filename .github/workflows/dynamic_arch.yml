@@ -33,7 +33,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Print system information
         run: |
@@ -76,7 +76,7 @@ jobs:
           fi
 
       - name: Compilation cache
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/.ccache
           # We include the commit sha in the cache key, as new cache entries are
@@ -196,29 +196,29 @@ jobs:
           - msystem: UCRT64
             idx: int32
             target-prefix: mingw-w64-ucrt-x86_64
-            fc-pkg: fc
+            fc-pkg: mingw-w64-ucrt-x86_64-fc
           - msystem: MINGW32
             idx: int32
             target-prefix: mingw-w64-i686
-            fc-pkg: fc
+            fc-pkg: 
           - msystem: CLANG64
             idx: int32
             target-prefix: mingw-w64-clang-x86_64
-            fc-pkg: fc
+            fc-pkg: mingw-w64-clang-x86_64-fc
           - msystem: UCRT64
             idx: int64
             idx64-flags: -DBINARY=64 -DINTERFACE64=1
             target-prefix: mingw-w64-ucrt-x86_64
-            fc-pkg: fc
+            fc-pkg: mingw-w64-ucrt-x86_64-fc
           - msystem: CLANG64
             idx: int64
             idx64-flags: -DBINARY=64 -DINTERFACE64=1
             target-prefix: mingw-w64-clang-x86_64
-            fc-pkg: fc
+            fc-pkg: mingw-w64-clang-x86_64-fc
           - msystem: UCRT64
             idx: int32
             target-prefix: mingw-w64-ucrt-x86_64
-            fc-pkg: fc
+            fc-pkg: mingw-w64-ucrt-x86_64-fc
             build-type: None
         exclude:
           - msystem: MINGW32
@@ -247,13 +247,13 @@ jobs:
           install: >-
             base-devel
             ${{ matrix.target-prefix }}-cc
-            ${{ matrix.target-prefix }}-${{ matrix.fc-pkg }}
+            ${{ matrix.fc-pkg }}
             ${{ matrix.target-prefix }}-cmake
             ${{ matrix.target-prefix }}-ninja
             ${{ matrix.target-prefix }}-ccache
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Prepare ccache
         # Get cache location of ccache
@@ -266,7 +266,7 @@ jobs:
           echo "key=ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}-${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: Restore ccache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v5
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -311,7 +311,7 @@ jobs:
 
       - name: Save ccache
         # Save the cache after we are done (successfully) building
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v5
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -357,7 +357,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Install Dependencies
         run: |
@@ -365,7 +365,7 @@ jobs:
           sudo apt-get install -y ccache gcc-${{ matrix.triple }} gfortran-${{ matrix.triple }} libgomp1-${{ matrix.target }}-cross
 
       - name: Compilation cache
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/.ccache
           key: ccache-${{ runner.os }}-${{ matrix.target }}-${{ github.ref }}-${{ github.sha }}
@@ -392,7 +392,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Install Dependencies
         run: |
@@ -404,4 +404,55 @@ jobs:
           make -j${nproc}
           make -j${nproc} lapack-test
 
+  neoverse_n1_build:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    runs-on: ubuntu-24.04-arm
 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc gfortran make
+
+      - name: Build OpenBLAS
+        run: |
+          make -j${nproc} TARGET=NEOVERSEN1
+          make -j${nproc} TARGET=NEOVERSEN1 lapack-test
+
+  neoverse_n1_omp_build:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc gfortran make
+
+      - name: Build OpenBLAS
+        run: |
+          make -j${nproc} TARGET=NEOVERSEN1 USE_OPENMP=1
+  
+  neoverse_n1_ilp64_build:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc gfortran make
+
+      - name: Build OpenBLAS
+        run: |
+          make -j${nproc} TARGET=NEOVERSEN1 INTERFACE64=1
+          make -j${nproc} TARGET=NEOVERSEN1 INTERFACE64=1 lapack-test

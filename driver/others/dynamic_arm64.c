@@ -151,24 +151,50 @@ extern gotoblas_t gotoblas_A64FX;
 #else
 #define gotoblas_A64FX gotoblas_ARMV8
 #endif
+
 #else //not a user-specified dynamic_list
+
+#ifdef OS_DARWIN
+#define gotoblas_CORTEXA55 gotoblas_ARMV8
+#else
 extern gotoblas_t  gotoblas_CORTEXA53;
+#endif
 #define gotoblas_CORTEXA55 gotoblas_CORTEXA53
+#ifdef OS_DARWIN
+#define gotoblas_CORTEXA57 gotoblas_ARMV8
+#else
 extern gotoblas_t  gotoblas_CORTEXA57;
+#endif
 #define gotoblas_CORTEXA72 gotoblas_CORTEXA57
 #define gotoblas_CORTEXA73 gotoblas_CORTEXA57
 #define gotoblas_FALKOR gotoblas_CORTEXA57
+#ifdef OS_DARWIN
+#define gotoblas_THUNDERX gotoblas_ARMV8
+#define gotoblas_THUNDERX2T99 gotoblas_ARMV8
+#define gotoblas_THUNDERX3T110 gotoblas_ARMV8
+#define gotoblas_TSV110 gotoblas_ARMV8
+#define gotoblas_EMAG8180 gotoblas_ARMV8
+#else
 extern gotoblas_t  gotoblas_THUNDERX;
 extern gotoblas_t  gotoblas_THUNDERX2T99;
+extern gotoblas_t  gotoblas_THUNDERX3T110;
 extern gotoblas_t  gotoblas_TSV110;
 extern gotoblas_t  gotoblas_EMAG8180;
+#endif
 extern gotoblas_t  gotoblas_NEOVERSEN1;
 #define gotoblas_VORTEX gotoblas_NEOVERSEN1
+#ifndef OS_DARWIN
 #ifndef NO_SVE
 extern gotoblas_t  gotoblas_NEOVERSEV1;
 extern gotoblas_t  gotoblas_NEOVERSEN2;
 extern gotoblas_t  gotoblas_ARMV8SVE;
 extern gotoblas_t  gotoblas_A64FX;
+#else
+#define gotoblas_NEOVERSEV1 gotoblas_ARMV8
+#define gotoblas_NEOVERSEN2 gotoblas_ARMV8
+#define gotoblas_ARMV8SVE   gotoblas_ARMV8
+#define gotoblas_A64FX      gotoblas_ARMV8
+#endif
 #else
 #define gotoblas_NEOVERSEV1 gotoblas_ARMV8
 #define gotoblas_NEOVERSEN2 gotoblas_ARMV8
@@ -191,7 +217,6 @@ extern gotoblas_t  gotoblas_VORTEXM4;
 #define gotoblas_VORTEXM4 gotoblas_NEOVERSEN1
 #endif
 
-extern gotoblas_t  gotoblas_THUNDERX3T110;
 #endif
 #define gotoblas_NEOVERSEV2 gotoblas_NEOVERSEN2
 

@@ -90,9 +90,3 @@ CROTKERNEL   = ../arm/zrot.c
 ZROTKERNEL   = ../arm/zrot.c
 endif
 
-ifeq ($(OSNAME), FreeBSD)
-SSCALKERNEL  = ../arm/scal.c
-DSCALKERNEL  = ../arm/scal.c
-CSCALKERNEL  = ../arm/zscal.c
-ZSCALKERNEL  = ../arm/zscal.c
-endif
