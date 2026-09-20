@@ -6,7 +6,6 @@
 #include "common.h"
 #include <stdlib.h>
 #include <inttypes.h>
-#include <math.h>
 #if defined(DYNAMIC_ARCH)
 #define COMBINE(a,b) a ## b
 #define COMBINE2(a,b) COMBINE(a,b)
@@ -50,7 +49,7 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A,\
         uint64_t m_mod, vl_elms;
         
         vl_elms = sve_cntw();
-        m_mod = ceil((double)M/(double)vl_elms) * vl_elms;
+        m_mod = (((uint64_t)M + vl_elms - 1) / vl_elms) * vl_elms;
 
         float *A_mod = (float *) malloc(m_mod*K*sizeof(float));
 	    

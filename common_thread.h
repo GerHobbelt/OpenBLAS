@@ -51,7 +51,7 @@ extern void goto_set_num_threads(int nthreads);
 #undef TIMING_DEBUG
 
 /* Global Parameter */
-extern int blas_cpu_number;
+extern _Atomic int blas_cpu_number;
 extern int blas_num_threads;
 extern int blas_omp_linked;
 

@@ -73,12 +73,8 @@ int blas_omp_threads_local = 1;
 
 extern int openblas_omp_adaptive_env(void);
 
-static void * blas_thread_buffer[MAX_PARALLEL_NUMBER][MAX_CPU_NUMBER];
-#ifdef HAVE_C11
-static atomic_bool blas_buffer_inuse[MAX_PARALLEL_NUMBER];
-#else
-static _Bool blas_buffer_inuse[MAX_PARALLEL_NUMBER];
-#endif
+static _Atomic(void *) blas_thread_buffer[MAX_PARALLEL_NUMBER][MAX_CPU_NUMBER];
+static _Atomic _Bool blas_buffer_inuse[MAX_PARALLEL_NUMBER];
 
 static void adjust_thread_buffers(void) {
 

@@ -6,7 +6,6 @@
 #include "common.h"
 #include <stdlib.h>
 #include <inttypes.h>
-#include <math.h>
 //#include "sme_abi.h"
 #if defined(HAVE_SME)
 
@@ -240,7 +239,7 @@ void CNAME (BLASLONG M, BLASLONG N, float alpha, float * __restrict A,\
     
     vl_elms = sve_cntw();
 
-    m_mod = ceil((double)M/(double)vl_elms) * vl_elms;
+    m_mod = (((uint64_t)M + vl_elms - 1) / vl_elms) * vl_elms;
 
     float *A_mod = (float *) malloc(m_mod*M*sizeof(float));
     strmm_direct_sme1_preprocess(M, M, A, A_mod);

@@ -98,7 +98,7 @@ though - please read the linked Makefiles if you want to see all variables.
 - `BUILD_DOUBLE`: build the double-precision real functions
 - `BUILD_COMPLEX`: build the single-precision complex functions
 - `BUILD_COMPLEX16`: build the double-precision complex functions
-- `BUILD_BFLOAT16`: build the "half precision brainfloat" real functions 
+- `BUILD_BFLOAT16`: build the `bfloat16` real functions
 - `EXPRECISION`: (do not use, this is a work in progress) option to use `long
   double` functions
 
