@@ -381,8 +381,12 @@ if (strcmp(gotoblas_corename(), "armv9sme") == 0
 #endif
 #endif
 
+
+
+//end of the ifndef CBLAS ... else ... section	
 #endif
 
+  if ((args.m == 0) || (args.n == 0)) return;
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();

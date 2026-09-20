@@ -473,24 +473,24 @@ endif
 
 ifeq ($(BUILD_BFLOAT16),1)
 test_bgemm : compare_sgemm_bgemm.c test_helpers.h ../$(LIBNAME)
-	$(CC) $(CLDFLAGS) -DIBFLOAT16 -DOBFLOAT16 -o test_bgemm compare_sgemm_bgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CLDFLAGS) -DIBFLOAT16 -DOBFLOAT16 -o test_bgemm compare_sgemm_bgemm.c ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB) $(CEXTRALIB)
 
 test_bgemv : compare_sgemv_bgemv.c ../$(LIBNAME)
-	$(CC) $(CLDFLAGS) -DIBFLOAT16 -DOBFLOAT16 -o test_bgemv compare_sgemv_bgemv.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CLDFLAGS) -DIBFLOAT16 -DOBFLOAT16 -o test_bgemv compare_sgemv_bgemv.c ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB) $(CEXTRALIB)
 
 test_sbgemm : compare_sgemm_sbgemm.c test_helpers.h ../$(LIBNAME)
-	$(CC) $(CLDFLAGS) -DIBFLOAT16 -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CLDFLAGS) -DIBFLOAT16 -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB) $(CEXTRALIB)
 
 test_sbgemv : compare_sgemv_sbgemv.c ../$(LIBNAME)
-	$(CC) $(CLDFLAGS) -DIBFLOAT16 -o test_sbgemv compare_sgemv_sbgemv.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CLDFLAGS) -DIBFLOAT16 -o test_sbgemv compare_sgemv_sbgemv.c ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB) $(CEXTRALIB)
 endif
 
 ifeq ($(BUILD_HFLOAT16),1)
 test_shgemm : compare_sgemm_shgemm.c test_helpers.h ../$(LIBNAME)
-	$(CC) $(CLDFLAGS) -DIHFLOAT16 -o test_shgemm compare_sgemm_shgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CLDFLAGS) -DIHFLOAT16 -o test_shgemm compare_sgemm_shgemm.c ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB) $(CEXTRALIB)
 
 test_shgemv : compare_sgemv_shgemv.c ../$(LIBNAME)
-	$(CC) $(CLDFLAGS) -o test_shgemv compare_sgemv_shgemv.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CLDFLAGS) -o test_shgemv compare_sgemv_shgemv.c ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB) $(CEXTRALIB)
 endif
 
 

@@ -422,6 +422,9 @@ endif
 ifeq ($(C_COMPILER), CLANG)
 CLANGVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
 CLANGVERSIONGTEQ12 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 12)
+ifeq ($(F_COMPILER), GFORTRAN)
+GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
+endif
 endif
 
 #
@@ -474,7 +477,7 @@ EXTRALIB	+= -lm
 endif
 
 ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD OpenBSD NetBSD DragonFly))
-ifeq ($(ARCH), $(filter $(ARCH),arm arm64))
+ifeq ($(ARCH), $(filter $(ARCH),arm arm64 power))
 EXTRALIB	+= -lm
 endif
 endif

@@ -2137,7 +2137,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, FLOAT* A, FLOAT* B, F
 {
     if (K <= 0) return 0;
     const BLASLONG m_edge = M & 15;
-    const bool S = (M == (ldc & 0xF));
+    const bool S = (ldc == m_edge);
 
     // -- MAIN PASS
 
@@ -2193,24 +2193,6 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, FLOAT* A, FLOAT* B, F
                 resultCD = __riscv_vfmacc_vf_f32m2( resultCD, B6, A00, 16 );
                 resultEF = __riscv_vfmacc_vf_f32m2( resultEF, B7, A00, 16 );
             }
-
-            // LMUL = 2 does worst here
-            vfloat32m1_t result0 = __riscv_vget_v_f32m2_f32m1(result01, 0);
-            vfloat32m1_t result1 = __riscv_vget_v_f32m2_f32m1(result01, 1);
-            vfloat32m1_t result2 = __riscv_vget_v_f32m2_f32m1(result23, 0);
-            vfloat32m1_t result3 = __riscv_vget_v_f32m2_f32m1(result23, 1);
-            vfloat32m1_t result4 = __riscv_vget_v_f32m2_f32m1(result45, 0);
-            vfloat32m1_t result5 = __riscv_vget_v_f32m2_f32m1(result45, 1);
-            vfloat32m1_t result6 = __riscv_vget_v_f32m2_f32m1(result67, 0);
-            vfloat32m1_t result7 = __riscv_vget_v_f32m2_f32m1(result67, 1);
-            vfloat32m1_t result8 = __riscv_vget_v_f32m2_f32m1(result89, 0);
-            vfloat32m1_t result9 = __riscv_vget_v_f32m2_f32m1(result89, 1);
-            vfloat32m1_t result10 = __riscv_vget_v_f32m2_f32m1(resultAB, 0);
-            vfloat32m1_t result11 = __riscv_vget_v_f32m2_f32m1(resultAB, 1);
-            vfloat32m1_t result12 = __riscv_vget_v_f32m2_f32m1(resultCD, 0);
-            vfloat32m1_t result13 = __riscv_vget_v_f32m2_f32m1(resultCD, 1);
-            vfloat32m1_t result14 = __riscv_vget_v_f32m2_f32m1(resultEF, 0);
-            vfloat32m1_t result15 = __riscv_vget_v_f32m2_f32m1(resultEF, 1);
 
             FLOAT *C2 = C;
 

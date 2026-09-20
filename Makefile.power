@@ -111,7 +111,7 @@ endif
 endif
 
 ifeq ($(C_COMPILER), CLANG)
-CCOMMON_OPT += -fno-integrated-as
+CCOMMON_OPT += -fno-integrated-as -Wa,-mpwr10
 endif
 # workaround for C->FORTRAN ABI violation in LAPACKE
 ifeq ($(F_COMPILER), GFORTRAN)

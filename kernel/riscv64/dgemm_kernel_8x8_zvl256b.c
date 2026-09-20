@@ -1628,11 +1628,12 @@ static void NM_TAIL(BLASLONG K, BLASLONG M, const BLASLONG m_edge, const BLASLON
         }
     }
 }
+
 int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, FLOAT* A, FLOAT* B, FLOAT* C, BLASLONG ldc)
 {
     if (K <= 0) return 0;
     const BLASLONG m_edge = M & 7;
-    const bool S = (M == (ldc & 0x7));
+    const bool S = (ldc == m_edge);
 
     // -- MAIN PASS
 
@@ -1688,24 +1689,6 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, FLOAT* A, FLOAT* B, F
                 resultCD = __riscv_vfmacc_vf_f64m2( resultCD, B6, A00, 8 );
                 resultEF = __riscv_vfmacc_vf_f64m2( resultEF, B7, A00, 8 );
             }
-
-            // LMUL = 2 does worst here
-            vfloat64m1_t result0 = __riscv_vget_v_f64m2_f64m1(result01, 0);
-            vfloat64m1_t result1 = __riscv_vget_v_f64m2_f64m1(result01, 1);
-            vfloat64m1_t result2 = __riscv_vget_v_f64m2_f64m1(result23, 0);
-            vfloat64m1_t result3 = __riscv_vget_v_f64m2_f64m1(result23, 1);
-            vfloat64m1_t result4 = __riscv_vget_v_f64m2_f64m1(result45, 0);
-            vfloat64m1_t result5 = __riscv_vget_v_f64m2_f64m1(result45, 1);
-            vfloat64m1_t result6 = __riscv_vget_v_f64m2_f64m1(result67, 0);
-            vfloat64m1_t result7 = __riscv_vget_v_f64m2_f64m1(result67, 1);
-            vfloat64m1_t result8 = __riscv_vget_v_f64m2_f64m1(result89, 0);
-            vfloat64m1_t result9 = __riscv_vget_v_f64m2_f64m1(result89, 1);
-            vfloat64m1_t result10 = __riscv_vget_v_f64m2_f64m1(resultAB, 0);
-            vfloat64m1_t result11 = __riscv_vget_v_f64m2_f64m1(resultAB, 1);
-            vfloat64m1_t result12 = __riscv_vget_v_f64m2_f64m1(resultCD, 0);
-            vfloat64m1_t result13 = __riscv_vget_v_f64m2_f64m1(resultCD, 1);
-            vfloat64m1_t result14 = __riscv_vget_v_f64m2_f64m1(resultEF, 0);
-            vfloat64m1_t result15 = __riscv_vget_v_f64m2_f64m1(resultEF, 1);
 
             FLOAT *C2 = C;
 

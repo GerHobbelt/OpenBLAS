@@ -23,7 +23,7 @@ config="$2"
 compiler_name="$3"
 shift 3
 flags="$*"
-is_ios=false
+darwin_os=""
 
 # First, we need to know the target OS and compiler name
 {
@@ -70,7 +70,7 @@ case "$data" in *OS_FREEBSD*) os=FreeBSD ;; esac
 case "$data" in *OS_NETBSD*) os=NetBSD ;; esac
 case "$data" in *OS_OPENBSD*) os=OpenBSD ;; esac
 case "$data" in *OS_DRAGONFLY*) os=DragonFly ;; esac
-case "$data" in *OS_DARWIN*) os=Darwin ;; esac
+case "$data" in *OS_DARWIN*) os=Darwin; darwin_os=macOS ;; esac
 case "$data" in *OS_SUNOS*) os=SunOS ;; esac
 case "$data" in *OS_AIX*) os=AIX ;; esac
 case "$data" in *OS_OSF*) os=osf ;; esac
@@ -79,7 +79,7 @@ case "$data" in *OS_CYGWIN_NT*) os=CYGWIN_NT ;; esac
 case "$data" in *OS_INTERIX*) os=Interix ;; esac
 case "$data" in *OS_ANDROID*) os=Android ;; esac
 case "$data" in *OS_HAIKU*) os=Haiku ;; esac
-case "$data" in *OS_IOS*) is_ios=true ;; esac
+case "$data" in *OS_IOS*) darwin_os=iOS ;; esac
 
 case "$data" in
     *ARCH_X86_64*) architecture=x86_64 ;;
@@ -404,7 +404,7 @@ fi
 data=`$compiler_name $flags -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`
 
 need_fu=''
-if echo "$data" | grep 'globl[[:space:]][_\.]'; then
+if echo "$data" | grep -q 'globl[[:space:]][_\.]'; then
     need_fu="${data##*globl[[:space:]]}"
     need_fu="${need_fu%%[!_\.]*}"
 fi
@@ -421,7 +421,7 @@ fi
 [ "$os" = "Android" ] && [ "$hostos" = "Linux" ] && [ -n "$TERMUX_APP_PID" ] \
     && cross=0
 
-[ "$is_ios" = true ] && cross=1
+[ "$darwin_os" = iOS ] && cross=1
 
 [ "$USE_OPENMP" != 1 ] && openmp=''
 
@@ -489,11 +489,11 @@ done
 :> "$makefile" || exit 1
 :> "$config" || exit 1
 
-
 # print $data, "\n";
 
 {
     printf "OSNAME=%s\n" "$os"
+    [ -n "$darwin_os" ] && printf "OSNAME_DISPLAY=%s\n" "$darwin_os"
     printf "ARCH=%s\n" "$architecture"
     printf "C_COMPILER=%s\n" "$compiler"
     [ $binformat != 'bin32' ] && printf "BINARY32=\n"

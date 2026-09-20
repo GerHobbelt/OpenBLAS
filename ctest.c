@@ -182,6 +182,6 @@ ARCH_WASM
 OS_WINDOWS
 #endif
 
-#if defined(TARGET_OS_IPHONE)
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
 OS_IOS
 #endif
