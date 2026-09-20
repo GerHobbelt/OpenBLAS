@@ -41,6 +41,7 @@
 #define CACHE_LINE_SIZE 8
 #endif
 
+#define DIVIDE_RATE_MAX 2
 #ifndef DIVIDE_RATE
 #define DIVIDE_RATE 2
 #endif
@@ -93,7 +94,7 @@ typedef struct {
 #else
   volatile
 #endif  
-   BLASLONG working[MAX_CPU_NUMBER][CACHE_LINE_SIZE * DIVIDE_RATE];
+   BLASLONG working[MAX_CPU_NUMBER][CACHE_LINE_SIZE * DIVIDE_RATE_MAX];
 } job_t;
 
 
@@ -294,7 +295,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   FLOAT *a, *b, *c;
   job_t *job = (job_t *)args -> common;
   BLASLONG xxx, bufferside;
-  FLOAT *buffer[DIVIDE_RATE];
+  FLOAT *buffer[DIVIDE_RATE_MAX];
 
   BLASLONG ls, min_l, jjs, min_jj;
   BLASLONG is, min_i, div_n;

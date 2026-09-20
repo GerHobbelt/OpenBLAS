@@ -148,11 +148,12 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **Intel Haswell**: Optimized Level-3 and Level-2 BLAS with AVX2 and FMA on x86-64.
 - **Intel Skylake-X**: Optimized Level-3 and Level-2 BLAS with AVX512 and FMA on x86-64.
 - **Intel Cooper Lake**: as Skylake-X with improved BFLOAT16 support.
+- **Intel Sapphire Rapids**: as Cooper Lake with improved BFLOAT16 SBGEMM kernel.
 - **AMD Bobcat**: Used GotoBLAS2 Barcelona codes.
 - **AMD Bulldozer**: x86-64 ?GEMM FMA4 kernels. (Thanks to Werner Saar)
 - **AMD PILEDRIVER**: Uses Bulldozer codes with some optimizations.
 - **AMD STEAMROLLER**: Uses Bulldozer codes with some optimizations.
-- **AMD ZEN**: Uses Haswell codes with some optimizations for Zen 2/3 (use SkylakeX for Zen4)
+- **AMD ZEN**: Uses Haswell codes with some optimizations for Zen 2/3, SkylakeX for Zen4, Cooperlake for Zen5
 
 #### MIPS32
 
@@ -186,9 +187,13 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **EMAG 8180**: preliminary support based on A57
 - **Neoverse N1**: (AWS Graviton2) preliminary support
 - **Neoverse V1**: (AWS Graviton3) optimized Level-3 BLAS
+- **Neoverse N2**: preliminary support
+- **Neoverse V2**: preliminary support
 - **Apple Vortex**: preliminary support based on ThunderX2/3
+- **Apple VortexM4**: preliminary support based on ThunderX2/3, SME kernels for SGEMM,SSYMM,STRMM,SSYRK,SSYR2K
 - **A64FX**:  preliminary support, optimized Level-3 BLAS
 - **ARMV8SVE**: any ARMV8 cpu with SVE extensions 
+- **ARMV9SME**: any ARMV9 cpu with SVE and SME extensions 
 
 #### PPC/PPC64
 
@@ -248,6 +253,12 @@ e.g.:
   make HOSTCC=gcc TARGET=LA464 CC=loongarch64-unknown-linux-gnu-gcc FC=loongarch64-unknown-linux-gnu-gfortran USE_SIMPLE_THREADED_LEVEL3=1
   ```
   The old-style TARGET=LOONGSON3R5 is still supported
+
+#### WASM
+  Not a cpu target in the strict sense, but portable WebAssembly for browser-based applications and the like. See emscripten.org for the compiler and related information
+
+- **WASM128_GENERIC**: Optimized SGEMM,DGEMM, DAXPY, SSUM/DSUM, SDOT/DDOT and SROT/DROT
+
 
 ### Support for multiple targets in a single library
 

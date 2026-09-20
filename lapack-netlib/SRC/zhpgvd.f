@@ -246,7 +246,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      DOUBLE PRECISION   DROUNDUP_LWORK
+      EXTERNAL           LSAME, DROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZHPEVD, ZHPGST, ZPPTRF, ZTPMV, ZTPSV
@@ -329,9 +330,9 @@
       CALL ZHPGST( ITYPE, UPLO, N, AP, BP, INFO )
       CALL ZHPEVD( JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, LWORK, RWORK,
      $             LRWORK, IWORK, LIWORK, INFO )
-      LWMIN = INT( MAX( DBLE( LWMIN ), DBLE( WORK( 1 ) ) ) )
-      LRWMIN = INT( MAX( DBLE( LRWMIN ), DBLE( RWORK( 1 ) ) ) )
-      LIWMIN = INT( MAX( DBLE( LIWMIN ), DBLE( IWORK( 1 ) ) ) )
+      LWMIN = MAX( LWMIN, INT( DBLE( WORK( 1 ) ) ) )
+      LRWMIN = MAX( LRWMIN, INT( RWORK( 1 ) ) )
+      LIWMIN = MAX( LIWMIN, IWORK( 1 ) )
 *
       IF( WANTZ ) THEN
 *

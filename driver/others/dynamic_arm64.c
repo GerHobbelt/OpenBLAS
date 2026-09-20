@@ -129,10 +129,16 @@ extern gotoblas_t gotoblas_ARMV9SME;
 #else
 #define gotoblas_ARMV9SME gotoblas_ARMV8
 #endif
+#ifdef DYN_VORTEX
+extern gotoblas_t gotoblas_VORTEX;
+#elif defined(DYN_NEOVERSEN1)
+#define gotoblas_VORTEX gotoblas_NEOVERSEN1
+#else
+#define gotoblas_VORTEX gotoblas_ARMV8
+#endif
 #ifdef DYN_VORTEXM4
 extern gotoblas_t gotoblas_VORTEXM4;
 #else
-#error "dont have vortexm4"
 #define gotoblas_VORTEXM4 gotoblas_ARMV8
 #endif
 #ifdef DYN_CORTEXA55
@@ -145,7 +151,7 @@ extern gotoblas_t gotoblas_A64FX;
 #else
 #define gotoblas_A64FX gotoblas_ARMV8
 #endif
-#else
+#else //not a user-specified dynamic_list
 extern gotoblas_t  gotoblas_CORTEXA53;
 #define gotoblas_CORTEXA55 gotoblas_CORTEXA53
 extern gotoblas_t  gotoblas_CORTEXA57;
@@ -157,6 +163,7 @@ extern gotoblas_t  gotoblas_THUNDERX2T99;
 extern gotoblas_t  gotoblas_TSV110;
 extern gotoblas_t  gotoblas_EMAG8180;
 extern gotoblas_t  gotoblas_NEOVERSEN1;
+#define gotoblas_VORTEX gotoblas_NEOVERSEN1
 #ifndef NO_SVE
 extern gotoblas_t  gotoblas_NEOVERSEV1;
 extern gotoblas_t  gotoblas_NEOVERSEN2;
@@ -192,7 +199,7 @@ extern void openblas_warning(int verbose, const char * msg);
 #define FALLBACK_VERBOSE 1
 #define NEOVERSEN1_FALLBACK "OpenBLAS : Your OS does not support SVE instructions. OpenBLAS is using Neoverse N1 kernels as a fallback, which may give poorer performance.\n"
 
-#define NUM_CORETYPES   20
+#define NUM_CORETYPES   21
 
 /*
  * In case asm/hwcap.h is outdated on the build system, make sure
@@ -232,6 +239,7 @@ static char *corename[] = {
   "armv8sve",
   "a64fx",
   "armv9sme",
+  "vortex",
   "vortexm4",
   "unknown"
 };
@@ -256,7 +264,8 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_ARMV8SVE)     return corename[16];
   if (gotoblas == &gotoblas_A64FX)        return corename[17];
   if (gotoblas == &gotoblas_ARMV9SME)     return corename[18];
-  if (gotoblas == &gotoblas_VORTEXM4)     return corename[19];
+  if (gotoblas == &gotoblas_VORTEX)     return corename[19];
+  if (gotoblas == &gotoblas_VORTEXM4)     return corename[20];
   return corename[NUM_CORETYPES];
 }
 
@@ -295,7 +304,8 @@ static gotoblas_t *force_coretype(char *coretype) {
     case 16: return (&gotoblas_ARMV8SVE);
     case 17: return (&gotoblas_A64FX);
     case 18: return (&gotoblas_ARMV9SME);
-    case 19: return (&gotoblas_VORTEXM4);
+    case 19: return (&gotoblas_VORTEX);
+    case 20: return (&gotoblas_VORTEXM4);
   }
   snprintf(message, 128, "Core not found: %s\n", coretype);
   openblas_warning(1, message);
@@ -312,7 +322,7 @@ static gotoblas_t *get_coretype(void) {
    	return &gotoblas_VORTEXM4;
   }
 #endif
-  return &gotoblas_NEOVERSEN1;
+  return &gotoblas_VORTEX;
 #endif
 	
 #if (!defined OS_LINUX && !defined OS_ANDROID)
@@ -397,6 +407,8 @@ static gotoblas_t *get_coretype(void) {
         case 0xd08: // Cortex A72
           return &gotoblas_CORTEXA72;
         case 0xd09: // Cortex A73
+	case 0xd0a: // Cortex A75
+	case 0xd0b: // Cortex A76
           return &gotoblas_CORTEXA73;
         case 0xd0c: // Neoverse N1
           return &gotoblas_NEOVERSEN1;
@@ -486,7 +498,7 @@ static gotoblas_t *get_coretype(void) {
       break;
     case 0x61: // Apple
 	if (support_sme1()) return &gotoblas_VORTEXM4;
-	return &gotoblas_NEOVERSEN1;
+	return &gotoblas_VORTEX;
       break;
     default:
       snprintf(coremsg, 128, "Unknown CPU model - implementer %x part %x\n",implementer,part);

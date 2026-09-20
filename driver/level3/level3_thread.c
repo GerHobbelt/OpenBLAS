@@ -41,12 +41,17 @@
 #define CACHE_LINE_SIZE 8
 #endif
 
+#define DIVIDE_RATE_MAX 2
+
 #ifndef DIVIDE_RATE
 #define DIVIDE_RATE 2
 #endif
 
-#ifndef GEMM_PREFERED_SIZE
-#define GEMM_PREFERED_SIZE 1
+#ifdef DYNAMIC_ARCH
+#define GEMM_PREFERRED_SIZE gotoblas->preferred_size
+#endif
+#ifndef GEMM_PREFERRED_SIZE
+#define GEMM_PREFERRED_SIZE 1
 #endif
 
 //The array of job_t may overflow the stack.
@@ -93,7 +98,7 @@
 
 typedef struct {
   volatile
-   BLASLONG working[MAX_CPU_NUMBER][CACHE_LINE_SIZE * DIVIDE_RATE];
+   BLASLONG working[MAX_CPU_NUMBER][CACHE_LINE_SIZE * DIVIDE_RATE_MAX];
 } job_t;
 
 
@@ -234,7 +239,7 @@ typedef struct {
 
 static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, IFLOAT *sa, IFLOAT *sb, BLASLONG mypos){
 
-  IFLOAT *buffer[DIVIDE_RATE];
+  IFLOAT *buffer[DIVIDE_RATE_MAX];
 
   BLASLONG k, lda, ldb, ldc;
   BLASLONG m_from, m_to, n_from, n_to;
@@ -707,7 +712,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   while (m > 0){
     width = blas_quickdivide(m + nthreads_m - num_parts - 1, nthreads_m - num_parts);
 
-    width = round_up(m, width, GEMM_PREFERED_SIZE);
+    width = round_up(m, width, GEMM_PREFERRED_SIZE);
 
     m -= width;
 
@@ -758,7 +763,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
         if (width < switch_ratio) {
           width = switch_ratio;
         }
-        width = round_up(width_n, width, GEMM_PREFERED_SIZE);
+        width = round_up(width_n, width, GEMM_PREFERRED_SIZE);
 
         width_n -= width;
         if (width_n < 0) {

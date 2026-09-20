@@ -262,7 +262,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static RETURN_TYPE dot_kernel_asimd(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {
-	volatile RETURN_TYPE  dot = 0.0;
+#ifndef DOUBLE
+    volatile
+#endif
+    RETURN_TYPE  dot = 0.0;
 	BLASLONG j = 0;
 
 	__asm__ __volatile__ (

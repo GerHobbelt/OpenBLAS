@@ -268,7 +268,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      DOUBLE PRECISION   DROUNDUP_LWORK
+      EXTERNAL           LSAME, DROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZHEEVD, ZHEGST, ZPOTRF, ZTRMM, ZTRSM
@@ -354,9 +355,9 @@
       CALL ZHEGST( ITYPE, UPLO, N, A, LDA, B, LDB, INFO )
       CALL ZHEEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, RWORK, LRWORK,
      $             IWORK, LIWORK, INFO )
-      LOPT = INT( MAX( DBLE( LOPT ), DBLE( WORK( 1 ) ) ) )
-      LROPT = INT( MAX( DBLE( LROPT ), DBLE( RWORK( 1 ) ) ) )
-      LIOPT = INT( MAX( DBLE( LIOPT ), DBLE( IWORK( 1 ) ) ) )
+      LOPT = MAX( LOPT, INT( DBLE( WORK( 1 ) ) ) )
+      LROPT = MAX( LROPT, INT( RWORK( 1 ) ) )
+      LIOPT = MAX( LIOPT, IWORK( 1 ) )
 *
       IF( WANTZ .AND. INFO.EQ.0 ) THEN
 *

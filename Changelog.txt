@@ -1,7 +1,90 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.32
+23-Mar-2026
+
+general:
+ - Moved the preliminary support for a Web Assembly target to its own WASM
+   architecture and WASM128_GENERIC target
+ - Fixed a potential performance difference between dedicated compilation for
+   a target and its representation in DYNAMIC_ARCH builds by making additional
+   cpu-specific parameters available to the DYNAMIC_ARCH configuration
+ - Fixed the reimplementation of LAPACK ?GESV to conform to the reference (i.e.
+   compute the LU factorization even when NRHS is zero)
+ - Improved the error message that is displayed when the compile-time allocation
+   of memory buffers is exceeded
+ - Fixed a problem with non-serialized accesses to parallelized SYRK by concurrent
+   callers
+ - Fixed an ABI mismatch in the internal version of CDOT/ZDOT used by the C fallback
+   versions of the LAPACK source
+ - Improved the f_check script for detecting the Fortran compiler to handle embedded
+   dashes in path names
+ - Fixed several memory access issues in the utests that were detected by Address
+   Sanitizer
+ - Fixed Makefile errors in cases where only a subset of precision types was selected
+ - Fixed missing function errors in Makefile builds without LAPACK or without threads
+ - Fixed a syntax error in the benchmarks Makefile
+ - Fixed compiler warnings in the CBLAS testsuite
+ - Fixed the OpenMP compiler option used with the Intel Ifx compiler
+ - Updated the README sections on supported cpus and operating systems, and added
+   notes pertaining to JAVA
+ - Updated the documentation page for supported BLAS-like extensions
+ - included fixes from the Reference-LAPACK project:
+   - Improved step length selection in the fallback path of ?LAED4 
+     (Reference-LAPACK PR 1191)
+   - Rounding up of LWORK and removal of redundant type conversions in the GVD
+     functions (Reference-LAPACK PR 1202)
+   - internal errors were getting ignored in calculation of selected eigenvalues
+     (Reference-LAPACK PR 1204)
+
+arm64:
+ - Fixed a potential miscompilation of the SDOT/DDOT/DSDOT kernels
+ - Fixed DYNAMIC_ARCH compilation with CMake and compilers lacking SVE support
+ - Improved the performance of BGEMM and SBGEMM kernels for Neoverse V2
+ - Added optimized SSUM and DSUM kernels for Neoverse N1
+ - Added preliminary support for Neoverse V3 cpus as NEOVERSEV2
+ - Added cpu autodetection of Cortex A725 and X925 cpus
+ - Fixed a CMake build problem with flang on Mac OS
+ - Fixed build problems with gcc versions 12 and earlier that do not support fp16
+ - Fixed compilation of GEMM kernels for VORTEXM4/ARMV9SME without multithreading
+ - Fixed the optimized CDOT/ZDOT kernel to compile with LLVM under Windows on Arm
+ - Renamed the copy of the DllMain function used in static linking on MS Windows to
+   OpenBLASDllMain to avoid symbol name conflicts with other libraries
+
+ioongarch64:
+ - fixed POTRF returning wrong results on LA464 due to a wrong parameter setting
+
+power:
+ - Fixed compilation problems caused by missing support for half-precision floats (FP16)
+ - Fixed a potential miscompilation of the POWER10 DGEMV kernel by limiting its optimization
+   level
+ - Fixed a SCAL issue on PPCG4/PPC970 running Linux
+ - Worked around a SCAL issue on PPC970 running FreeBSD by switching to the generic C kernels
+
+riscv64:
+ - Optimized the CROT/ZROT kernel for vector length 128 in the non-unit stride path
+ - Improved SBGEMM/SHGEMM and related helper functions for type conversion
+ - Fixed probing for BFLOAT16 support in DYNAMIC_ARCH cpu detection at runtime
+
+x86_64:
+ - Fixed a potential miscompilation (by gcc 15.x) of the AVX512 SGEMM kernel for "small"
+   matrix sizes
+ - Fixed the SROT and DROT kernels for Haswell to have consistent (FMA) rounding
+   in the main loop and tail call
+ - Added automatic detection of Intel Arrow Lake H/U, Panther Lake and Jasper Lake
+ - Added automatic detection of Intel Emerald Rapids and upcoming cpu models
+ - Updated the cache size translation table in the cpu model autodetection code
+ - Improved cpu detection fallback to also include Nehalem as a non-AVX option  
+ - Fixed a Makefile build issue with clang and the SkylakeX SGEMM kernel 
+ - Renamed the copy of the DllMain function used in static linking on MS Windows to
+   OpenBLASDllMain to avoid symbol name conflicts with other libraries
+
+wasm:
+ - Added optimized intrinsics kernels for SGEMM and DGEMM as well as DOT, ROT and SUM
+
+====================================================================
 Version 0.3.31
-15-Jan-2025
+15-Jan-2026
 
 general:
  - reverted a matrix partitioning optimization from 0.3.30 that could lead to 

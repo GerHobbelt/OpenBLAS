@@ -131,7 +131,7 @@ case "$architecture" in
     	defined=1
     	;;
     arm|arm64) defined=1 ;;
-    zarch|e2k|alpha|ia64|riscv64|loonarch64|wasm)
+    zarch|e2k|alpha|ia64|riscv64|loongarch64|wasm)
     	defined=1
     	BINARY=64
     	;;

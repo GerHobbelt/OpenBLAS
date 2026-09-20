@@ -1317,7 +1317,11 @@ UNLOCK_COMMAND(&alloc_lock);
  error:
   printf("OpenBLAS : Program will terminate because you tried to allocate too many TLS memory regions.\n");
   printf("This library was built to support a maximum of %d threads - either rebuild OpenBLAS\n", NUM_BUFFERS);
-  printf("with a larger NUM_THREADS value or set the environment variable OPENBLAS_NUM_THREADS to\n");
+#ifdef USE_OPENMP
+  printf("with a larger NUM_THREADS value or set the environment variable OMP_NUM_THREADS to\n");
+#else
+  printf("with a larger NUM_THREADS value or set the environment variable OPENBLAS_NUM_THREADS to\n");  
+#endif
   printf("a sufficiently small number. This error typically occurs when the software that relies on\n");
   printf("OpenBLAS calls BLAS functions from many threads in parallel, or when your computer has more\n");
   printf("cpu cores than what OpenBLAS was configured to handle.\n"); 
@@ -3039,8 +3043,13 @@ void *blas_memory_alloc(int procpos){
 #endif
  if (memory_overflowed) goto terminate;
   fprintf(stderr,"OpenBLAS warning: precompiled NUM_THREADS exceeded, adding auxiliary array for thread metadata.\n");
+  fprintf(stderr,"Note that your application may still crash, if it is calling OpenBLAS from multiple threads in parallel\n"); 
   fprintf(stderr,"To avoid this warning, please rebuild your copy of OpenBLAS with a larger NUM_THREADS setting\n");
+#ifdef USE_OPENMP
+  fprintf(stderr,"or set the environment variable OMP_NUM_THREADS to %d or lower\n", MAX_CPU_NUMBER);
+#else
   fprintf(stderr,"or set the environment variable OPENBLAS_NUM_THREADS to %d or lower\n", MAX_CPU_NUMBER);
+#endif
   memory_overflowed=1;
   MB;
   new_release_info = (struct release_t*) malloc(NEW_BUFFERS * sizeof(struct release_t));
@@ -3142,7 +3151,11 @@ terminate:
 #endif
   printf("OpenBLAS : Program is Terminated. Because you tried to allocate too many memory regions.\n");
   printf("This library was built to support a maximum of %d threads - either rebuild OpenBLAS\n", NUM_BUFFERS);
-  printf("with a larger NUM_THREADS value or set the environment variable OPENBLAS_NUM_THREADS to\n");
+#ifdef USE_OPENMP
+  printf("with a larger NUM_THREADS value or set the environment variable OMP_NUM_THREADS to\n");
+#else
+  printf("with a larger NUM_THREADS value or set the environment variable OPENBLAS_NUM_THREADS to\n");  
+#endif
   printf("a sufficiently small number. This error typically occurs when the software that relies on\n");
   printf("OpenBLAS calls BLAS functions from many threads in parallel, or when your computer has more\n");
   printf("cpu cores than what OpenBLAS was configured to handle.\n"); 
