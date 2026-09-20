@@ -443,6 +443,10 @@ To then use the built OpenBLAS shared library in Visual Studio:
 
 ### Windows on Arm
 
+If you want to use a regular x64 Windows build of OpenBLAS with x64 software in the Prism emulator, be sure to use the latest version of Prism, and to check the box
+to "Disable floating point optimization" in the Emulation settings. (Right-click on the executable to open "Properties", then on the "Compatibility" tab click on
+"Change emulation settings").
+
 A fully functional native OpenBLAS for WoA that can be built as both a static and dynamic library using LLVM toolchain and Visual Studio 2022. Before starting to build, make sure that you have installed Visual Studio 2022 on your ARM device, including the "Desktop Development with C++" component (that contains the cmake tool).
 (Note that you can use the free "Visual Studio 2022 Community Edition" for this task. In principle it would be possible to build with VisualStudio alone, but using
 the LLVM toolchain enables native compilation of the Fortran sources of LAPACK and of all the optimized assembly files, which VisualStudio cannot handle on its own)

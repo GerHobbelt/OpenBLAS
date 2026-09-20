@@ -509,7 +509,7 @@ L30:
     if (i__1 < 2) {
         goto L60;
     }
-    for (i__ = 1; i__ <= 9; ++i__) {
+    for (i__ = 1; i__ <= 6; ++i__) {
         if (s_cmp(snamet, snames[i__ - 1] , (ftnlen)12, (ftnlen)12) == 
                 0) {
             goto L50;

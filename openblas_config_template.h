@@ -43,7 +43,12 @@ typedef uint16_t bfloat16;
 #if defined(OPENBLAS_ARCH_POWER) || defined(OPENBLAS_ARCH_LOONGARCH64)
 typedef bfloat16 hfloat16;
 #else
+#define __STDC_WANT_IEC_60559_TYPES_EXT__
+#include <float.h>
+#ifdef FLT16_MAX
 typedef _Float16 hfloat16;
+#else
+typedef uint16_t hfloat16;
 #endif
 #else
 #include <stdint.h>
