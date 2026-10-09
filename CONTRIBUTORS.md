@@ -272,6 +272,7 @@ In chronological order:
 
 * Anna Mayne <anna.mayne@arm.com>
   * [2025-11-19] Update thread throttling profile for SGEMV on NEOVERSEV1 and NEOVERSEV2
+  * [2026-09-24] Add interleaving to sgemm and dgemm. Disentangle trmm/symm from gemm.
 
 * Fadi Arafeh <fadi.arafeh@arm.com>
   * [2026-03-05] Accelerate SVE128 SBGEMM/BGEMM
@@ -288,3 +289,6 @@ hheei <hheei@users.noreply.github.com>
 
 * Hugo Meiland <hugo@meiland.nl>
   * [2026-08-09] Add Cortex-A72 DGEMM 6x8 microkernel and blocking
+
+* Arthur031221 <levi74108520963@gmail.com>
+  * [2026-10-02] Fix complex scaling in strided batched GEMM.
